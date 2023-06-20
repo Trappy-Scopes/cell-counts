@@ -1,4 +1,5 @@
 # cell-counts
+
 Cell counting database and auto-plotting repository.
 
 
@@ -18,5 +19,27 @@ Cell counting database and auto-plotting repository.
 ```mermaid
 flowchart LR
 	files["to_process<br>(files)"] --> extract_sheets --for_all_sheets--> extract-data --> plot
+```
+
+
+
+## Usual Cell Counting and Plotting
+
+
+
+```mermaid
+graph LR
+	create-file("create-file<br>(from template)") --> add-data --> analysis
+```
+
+```mermaid
+---
+title: analysis
+---
+graph LR
+
+count-data --> load-to-dataframe --> calculate-other-stats --save-->load-to-dataframe
+calculate-other-stats --> convert-counts-to-per-mL --> plot-raw --> plot-fits --> calculate-doubling-time 
+	
 ```
 
