@@ -29,10 +29,10 @@ def dataclass_to_csv(dataclasses, filename):
     Returns the dataframe object.
     If the filename is passed a `None` value, then no file is created.
     """
-	df = pd.DataFrame(dataclasses)
+    df = pd.DataFrame(dataclasses)
     if filename:
-	   df.to_csv(filename)
-	return df
+       df.to_csv(filename)
+    return df
 
 def csv_to_df(filename):
     """
@@ -56,7 +56,7 @@ def plot_individual(curve_id, data, ylog=True):
 
     if ylog:
         plt.yscale("log")
-        plt.ylim(10, 10**7)
+        plt.ylim(0, 10**7)
 
     plt.show()
     return curve
@@ -85,32 +85,33 @@ def plot_avg_replicates(data, ylog=True):
 
     if ylog:
         plt.yscale("log")
-        plt.ylim(10, 10**7)
+        plt.ylim(0, 10**7)
 
     plt.show()
     return curve
 
 # --------- Dataframe based functions --------------
-def plot_all_curves(dataframe, ylog=True):
+def plot_all_curves(df, ylog=True):
     """
     Plots all the replicates.
     Returns the plot object.
     """
-    all_replicates = dataframe.replicate.unique()
+    all_replicates = df.replicate.unique()
+    print(all_replicates)
 
     if ylog:
         plt.yscale("log")
-        plt.ylim(10, 10**7)
+        plt.ylim(0, 10**7)
 
     for rep in all_replicates:
-        plt.plot(dataframe[rep].exp_day, np.mean(dataframe[rep].counts), label=rep)
+        plt.plot(list(df[df.replicate == rep].exp_day), [np.mean(count) for count in df[df.replicate == rep].counts], "o-", label=rep)
     
     plt.legend()
     plt.title("Growth curves of all replicates")
     plt.show()
     return plt
 
-def individual_fit_exp(dataframe, replicate, name=None, ylog=True):
+def individual_fit_exp(df, replicate, name=None, ylog=True):
     """
     Does an exponential fit on the replicate ID.
     Returns the fit parameters.
@@ -119,7 +120,8 @@ def individual_fit_exp(dataframe, replicate, name=None, ylog=True):
         name = replicate
 
 
-    curve = dict(zip(dataframe[replicate].exp_day, np.mean(dataframe[replicate].counts)))
+    curve = dict(zip(df[df.replicate == replicate].exp_day, \
+     [np.mean(rep) for rep in df[df.replicate == replicate].counts]))
     
     exp_fn = lambda t, a, b: a*np.exp(b*t)
     popt, pcov = curve_fit(exp_fn,  list(curve.keys()),  list(curve.values()))
@@ -131,7 +133,7 @@ def individual_fit_exp(dataframe, replicate, name=None, ylog=True):
     
     if ylog:
         plt.yscale("log")
-        plt.ylim(10, 10**7)
+        plt.ylim(0, 10**7)
 
 
     plt.show()
