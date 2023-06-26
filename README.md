@@ -29,7 +29,7 @@ flowchart LR
 
 ```mermaid
 graph LR
-	create-file("create-file<br>(from template)") --> add-data --> analysis
+	new-counting("new-counting<br>(create from template)") --> user-adds-data --> analysis
 ```
 
 ```mermaid
@@ -38,7 +38,7 @@ title: analysis
 ---
 graph LR
 
-count-data --> load-to-dataframe --> calculate-other-stats --save-->load-to-dataframe
+data((data)) --> load-to-dataframe --> calculate-other-stats --save-->load-to-dataframe
 calculate-other-stats --> convert-counts-to-per-mL --> plot-raw --> plot-fits --> calculate-doubling-time 
 	
 ```

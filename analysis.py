@@ -104,10 +104,18 @@ def plot_all_curves(df, ylog=True):
         plt.ylim(0, 10**7)
 
     for rep in all_replicates:
-        plt.plot(list(df[df.replicate == rep].exp_day), [np.mean(count) for count in df[df.replicate == rep].counts], "o-", label=rep)
+        plt.plot(list(df[df.replicate == rep].exp_time), \
+                 list(df[df.replicate == rep].counts_per_ml), "o-", label=rep)
     
     plt.legend()
     plt.title("Growth curves of all replicates")
+    plt.ylabel("Cells per mL ->")
+
+    unit = ""
+    if "time_units" in df:
+        unit = f"({str(df[df.time_units][0])})"
+
+    plt.xlabel(f"Experiment time {unit} ->")
     plt.show()
     return plt
 
@@ -147,7 +155,6 @@ def doubling_time(params):
     return (np.log(2)/a2_fit_param[0][1])
 
 # Cell Normalisation Functions
-
 HCM_CONSTANTS = {"Depth_mm": 0.1, "grid_area_mm2":1, "tot_vol_mm3": 0.4, 
                  "total_vol_ml": 0.00040, "total_vol_ul": 0.40000, 
                  "mole": 6.02247*(10**23)  
@@ -167,8 +174,11 @@ def normalize_cells_per_ml(graph_, vsample_ul, veth_ul):
     # Normalize area
     vol_norm = lambda N: N / HCM_CONSTANTS["total_vol_ml"]
     
-    for point in graph:
-        graph[point] = vol_norm(count_norm(graph[point]))
+    if isinstance(graph, dict):
+        for point in graph:
+            graph[point] = vol_norm(count_norm(graph[point]))
+    else:
+        graph = vol_norm(count_norm(graph))
     
     return graph
     
