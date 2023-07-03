@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pprint import pprint
 from scipy.optimize import curve_fit
 import pandas as pd
+from copy import deepcopy
 
 """
 TODO:
@@ -34,11 +35,11 @@ def dataclass_to_csv(dataclasses, filename):
        df.to_csv(filename)
     return df
 
-def csv_to_df(filename):
+def csv_to_df(filename, sep=","):
     """
     Load CSV file to a dataframe.
     """
-    df = pd.read_csv(filename)
+    df = pd.read_csv(filename, sep=sep)
     return df
 
 def plot_individual(curve_id, data, ylog=True):
@@ -101,21 +102,23 @@ def plot_all_curves(df, ylog=True):
 
     if ylog:
         plt.yscale("log")
-        plt.ylim(0, 10**7)
+        plt.ylim(1, 10**7)
 
     for rep in all_replicates:
         plt.plot(list(df[df.replicate == rep].exp_time), \
                  list(df[df.replicate == rep].counts_per_ml), "o-", label=rep)
     
-    plt.legend()
+    plt.legend(bbox_to_anchor=(1.5, 1), loc='upper right', borderaxespad=0)
     plt.title("Growth curves of all replicates")
     plt.ylabel("Cells per mL ->")
 
     unit = ""
     if "time_units" in df:
-        unit = f"({str(df[df.time_units][0])})"
+        unit = f"({list(df.time_units)[0]})"
 
     plt.xlabel(f"Experiment time {unit} ->")
+    #plt.xlabel(f"Experiment time mins ->")
+
     plt.show()
     return plt
 

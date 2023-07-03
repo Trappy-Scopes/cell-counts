@@ -1,2 +1,8 @@
-﻿count1;count2;count3;count4;exp_time;time;date;inv_dil;replicate;strain;avg_count;counts_per_ml;v_sample_ul;v_etoh_ul
-2;0;1;0;1;12:30;20/06/2023;1000;A;CC125;;;10;0
+﻿count1;count2;count3;count4;exp_time;time;date;inv_dil;replicate;strain;avg_count;counts_per_ml;v_sample_ul;v_etoh_ul;ttime_units
+2;0;1;0;1;12:30;20/06/2023;1000;A;CC125;;;25;25;days
+1;1;1;0;2;14:00;21/06/2023;1000;A;CC125;;;25;25;
+3;2;3;9;3;11:00;22/06/2023;1000;A;CC125;;;25;25;
+10;2;4;3;4;14:00;23/06/2023;1000;A;CC125;;;25;25;
+42;12;31;37;5;14:00;24/06/2023;1000;A;CC125;;;25;25;
+108;75;96;141;6;11:00;25/06/2023;1000;A;CC125;;;25;25;
+330;501;438;532;7;14:20;26/06/2023;1000;A;CC125;;;25;25;
