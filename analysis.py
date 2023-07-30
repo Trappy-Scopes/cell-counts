@@ -92,11 +92,12 @@ def plot_avg_replicates(data, ylog=True):
     return curve
 
 # --------- Dataframe based functions --------------
-def plot_all_curves(df, ylog=True):
+def plot_all_curves(df, ylog=True, dpi=300, title=None):
     """
     Plots all the replicates.
     Returns the plot object.
     """
+
     all_replicates = df.replicate.unique()
     print(all_replicates)
 
@@ -105,11 +106,11 @@ def plot_all_curves(df, ylog=True):
         plt.ylim(1, 10**7)
 
     for rep in all_replicates:
+        strain = list(df[df.replicate == rep].strain)[0]
         plt.plot(list(df[df.replicate == rep].exp_time), \
-                 list(df[df.replicate == rep].counts_per_ml), "o-", label=rep)
+                 list(df[df.replicate == rep].counts_per_ml), "o-", label=f"{rep} - {strain}")
     
     plt.legend(bbox_to_anchor=(1.5, 1), loc='upper right', borderaxespad=0)
-    plt.title("Growth curves of all replicates")
     plt.ylabel("Cells per mL ->")
 
     unit = ""
@@ -117,8 +118,80 @@ def plot_all_curves(df, ylog=True):
         unit = f"({list(df.time_units)[0]})"
 
     plt.xlabel(f"Experiment time {unit} ->")
-    #plt.xlabel(f"Experiment time mins ->")
 
+    if not title:
+        plt.title("Growth curves of all replicates")
+    else:
+        plt.title(title)
+    plt.gcf().set_dpi(dpi)
+    plt.show()
+    return plt
+
+def plot_subplots(df, ylog=True, dpi=300, title=None):
+    """
+    Plots all the replicates.
+    Returns the plot object.
+    """
+    #plt.style.use('fivethirtyeight')
+    all_replicates = df.replicate.unique()
+    print(all_replicates)
+
+    fig, axes = plt.subplots(int(len(all_replicates)/2), 2, \
+                            dpi=dpi, sharex=True, sharey=True)
+                            #figsize=(4,int(len(all_replicates))))
+    if not title:
+        plt.suptitle("Growth curves of all replicates")
+    else:
+        fig.suptitle(title)
+
+    unit = ""
+    if "time_units" in df:
+        unit = f"({list(df.time_units)[0]})"
+    plt.xlabel(f"Experiment time {unit} ->", fontsize=8)
+    plt.ylabel("Cells per mL ->", fontsize=8)
+
+    fig.tight_layout(pad=1.0)
+
+
+    ##### ROW {0, 1}
+    ## COL1
+    ## COL2
+    ## ..
+    ## COLn
+    row_fn = lambda x: int(x % 2) # Remainder
+    col_fn = lambda y: int(y / 2) # Division Product
+
+    for i, rep in enumerate(all_replicates):
+        strain = list(df[df.replicate == rep].strain)[0]
+        col = row_fn(i)
+        row = col_fn(i)
+        print(col, row)
+        # Generate plot
+        x = list(df[df.replicate == rep].exp_time)
+        y = list(df[df.replicate == rep].counts_per_ml)
+        axes[row][col].plot(x, y, "o-", color="green")
+        axes[row][col].set_title(f"{rep} - {strain}", fontsize=8)
+        axes[row][col].set_xticks(np.arange(np.min(x), np.max(x), 1))
+        axes[row][col].yaxis.grid(True, which='minor')
+
+
+        # Contamination marks
+        if "comments" in df:
+            c = list(df[df.replicate == rep].comments)
+            c = [str(comment).lower() for comment in c]
+            if "contamination" in c:
+                print(f"{rep} - Contamination!")
+                idx  = c.index("contamination")
+                c_exp_day = x[idx]
+                c_density = 10**6
+                axes[row][col].plot(c_exp_day, c_density, marker= "$C$", label="Contamination", color="red")
+
+
+        if ylog:
+            axes[row][col].set_yscale("log")
+            axes[row][col].set_ylim(1, 10**7)
+            axes[row][col].set_yticks([int(10**i) for i in range(0,7,2)])
+    
     plt.show()
     return plt
 
@@ -172,7 +245,7 @@ def normalize_cells_per_ml(graph_, vsample_ul, veth_ul):
     graph = deepcopy(graph_)
     
     # Normalize fluid volume / Cell counts
-    count_norm = lambda N: N * (vsample_ul + veth_ul) / vsample_ul #-> Unitless normalization
+    count_norm = lambda N: N * (float(vsample_ul) + float(veth_ul)) / float(vsample_ul) #-> Unitless normalization
     
     # Normalize area
     vol_norm = lambda N: N / HCM_CONSTANTS["total_vol_ml"]
