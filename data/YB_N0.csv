@@ -1,7 +1,7 @@
-count1,count2,count3,count4,exp_time,time,date,inv_dil,replicate,strain,avg_count,counts_per_ml,v_sample_ul,v_etoh_ul,time_units
-0,3,0,0,1,14:20,26/06/2023,0,culture,CC125,,,25,25,days
-7,5,5,3,2,12:00,27/06/2023,0,culture,CC125,,,25,25
-18,16,19,19,3,11:00,28/06/2023,0,culture,CC125,,,25,25
-18,16,19,19,4,11:00,28/06/2023,0,culture,CC125,,,25,25
-15,13,16,11,5,11:00,29/06/2023,0,culture,CC125,,,25,25
-14,11,11,10,6,11:00,30/06/2023,0,culture,CC125,,,10,0
+count1,count2,count3,count4,exp_time,time,date,inv_dil,replicate,strain,avg_count,counts_per_ml,v_sample_ul,v_etoh_ul,time_units,pos1_swimmers,pos1_total,pos2_swimmers,pos2_total,pos3_swimmers,pos3_total,droplet_swimmers,droplet_total
+0,3,0,0,1,14:20,26/06/2023,0,culture,CC125,,,25,25,days,,,,,,,,
+7,5,5,3,2,12:00,27/06/2023,0,culture,CC125,,,25,25,,29,53,14,58,10,57,58,82
+18,16,19,19,3,11:00,28/06/2023,0,culture,CC125,,,25,25,,4,26,5,30,4,27,0,24
+18,16,19,19,4,11:00,28/06/2023,0,culture,CC125,,,25,25,,0,34,3,37,10,32,19,73
+15,13,16,11,5,11:00,29/06/2023,0,culture,CC125,,,25,25,,2,62,2,68,1,58,7,60
+14,11,11,10,6,11:00,30/06/2023,0,culture,CC125,,,10,0,,14,128,15,139,14,101,40,100

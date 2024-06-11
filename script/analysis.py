@@ -103,7 +103,7 @@ def plot_all_curves(df, ylog=True, dpi=300, title=None):
 
     if ylog:
         plt.yscale("log")
-        plt.ylim(1, 10**7)
+        plt.ylim(10**3, 10**8)
 
     for rep in all_replicates:
         strain = list(df[df.replicate == rep].strain)[0]
@@ -165,7 +165,7 @@ def plot_subplots(df, ylog=True, dpi=300, title=None):
         strain = list(df[df.replicate == rep].strain)[0]
         col = row_fn(i)
         row = col_fn(i)
-        print(col, row)
+        #print(col, row)
         # Generate plot
         x = list(df[df.replicate == rep].exp_time)
         y = list(df[df.replicate == rep].counts_per_ml)
@@ -189,8 +189,8 @@ def plot_subplots(df, ylog=True, dpi=300, title=None):
 
         if ylog:
             axes[row][col].set_yscale("log")
-            axes[row][col].set_ylim(1, 10**7)
-            axes[row][col].set_yticks([int(10**i) for i in range(0,7,2)])
+            axes[row][col].set_ylim(10**3, 10**7)
+            axes[row][col].set_yticks([int(10**i) for i in range(3,7,1)])
     
     plt.show()
     return plt
@@ -217,7 +217,7 @@ def individual_fit_exp(df, replicate, name=None, ylog=True):
     
     if ylog:
         plt.yscale("log")
-        plt.ylim(0, 10**7)
+        plt.ylim(10**3, 10**7)
 
 
     plt.show()
