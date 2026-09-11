@@ -1,0 +1,6 @@
+pandas>=2.0
+numpy>=1.26
+matplotlib>=3.8
+bokeh>=3.4
+mkdocs-material>=9.7.5,<10
+mkdocs-mermaid2-plugin>=1.1

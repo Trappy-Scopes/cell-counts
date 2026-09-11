@@ -1,0 +1,54 @@
+site_name: "Trappy-Scopes/cell-counts"
+site_description: "Cell density measurements and growth-curve analysis for the Trappy-Scopes lab."
+site_url: https://trappy-scopes.github.io/cell-counts
+repo_url: https://github.com/Trappy-Scopes/cell-counts
+edit_uri: ""
+
+nav:
+  - Home: index.md
+  - Growth curves: growth-curves.md
+  - Methodology: methodology.md
+  - The data: data.md
+  - All Trappy-Scopes projects: https://trappy-scopes.github.io/
+
+theme:
+  name: material
+  logo: assets/tsicon.png
+  favicon: assets/tsicon.png
+  palette:
+    - scheme: slate
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+    - scheme: default
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - toc.integrate
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - search
+  - mermaid2
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+  - attr_list
+  - md_in_html
+  - tables

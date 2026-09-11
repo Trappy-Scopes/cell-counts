@@ -1,0 +1,73 @@
+name: Build and publish site
+
+# Aggregate every experiment under data/, regenerate the figures, build the
+# MkDocs site and publish it. Nothing is committed back to main, so pushing
+# here never conflicts with a build.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/**'
+      - 'tools/**'
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write        # gh-deploy pushes to the gh-pages branch
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # gh-deploy needs the gh-pages history
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install --quiet -r requirements-docs.txt
+
+      - name: Aggregate experiments
+        run: python tools/parse_data.py
+
+      - name: Make plots
+        run: python tools/make_plots.py
+
+      - name: Stage figures into the site
+        run: |
+          mkdir -p docs/plots
+          cp plots/*.png docs/plots/
+          cp plots/interactive.html docs/plots/ 2>/dev/null || true
+          # per-experiment analysis figures cellcounting.py already wrote,
+          # so growth-curves.md can link to each experiment's own detail
+          for d in data/*/; do
+            name=$(basename "$d")
+            if [ -d "$d/analysis" ]; then
+              mkdir -p "docs/plots/$name"
+              cp "$d/analysis/"*.png "docs/plots/$name/" 2>/dev/null || true
+            fi
+          done
+          ls -la docs/plots/
+
+      - name: Upload the aggregated CSVs, so parsed data is downloadable
+        uses: actions/upload-artifact@v4
+        with:
+          name: parsed-data
+          path: build/*.csv
+          retention-days: 90
+
+      - name: Publish
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdocs gh-deploy --force
