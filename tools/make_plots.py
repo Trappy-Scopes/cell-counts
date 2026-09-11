@@ -174,9 +174,10 @@ def plot_interactive(cc, ma):
             p.add_tools(HoverTool(
                 renderers=[renderer],
                 tooltips=[("colony", "@label"), ("mutant", "@mutant"),
-                          ("time", "@ts"), ("density (compensated)", "@y{0.00e+0}"),
-                          ("raw density", "@raw{0.00e+0}"),
+                          ("time", "@ts"), ("density (compensated)", "@y{%.2e}"),
+                          ("raw density", "@raw{%.2e}"),
                           ("perturbed", "@perturbed")],
+                formatters={"@y": "printf", "@raw": "printf"},
                 mode="mouse",
             ))
 
