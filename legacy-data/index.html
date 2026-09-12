@@ -556,6 +556,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bg-11-media-from-coimbracsv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BG-11 media, from coimbra.csv
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mutant-media-condition" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -710,23 +721,50 @@ centrifugation/recovery protocol test, not a growth curve) and
 files (counting-protocol development runs — testing the counting method
 itself, e.g. ethanol-fixation volume, not a strain/mutant comparison). See
 <code>EXCLUDED_FILES</code> in <code>tools/parse_legacy.py</code> for the exact list and reasons.
-That leaves <code>TheEight.csv</code> as the only legacy growth curve in this corpus:
-four genotypes (CC125, MBO2, ODA1, TPG1) tracked over about 11 days.</p>
+That leaves <code>TheEight.csv</code> and <code>raw_exports/coimbra_growth_curves.csv</code> (see
+below) as the legacy growth curves in this corpus: <code>TheEight.csv</code> has four
+genotypes (CC125, MBO2, ODA1, TPG1) tracked over about 11 days, all in TAP.</p>
 <p><strong>Placeholder rows</strong> — a few early rows in <code>TheEight.csv</code> are marked "Faux
 Count" with all-zero counts, from before that assay actually started.
 Dropped everywhere.</p>
-<p><strong>Three large instrument exports</strong> (<code>raw_exports/coimbra.csv</code>, <code>october24.csv</code>,
+<p><strong>Two large instrument exports</strong> (<code>raw_exports/october24.csv</code>,
 <code>september24.csv</code>, ~33 MB each) aren't tracked in git at all (see
 <code>.gitignore</code>) and use a third, incompatible column schema besides — they're
-out of scope for this parser for now.</p>
+out of scope for this parser for now. A third, <code>raw_exports/coimbra.csv</code>,
+turned out to hold real data worth keeping — see the next section.</p>
+<h2 id="bg-11-media-from-coimbracsv">BG-11 media, from <code>coimbra.csv</code><a class="headerlink" href="#bg-11-media-from-coimbracsv" title="Permanent link">&para;</a></h2>
+<p><code>raw_exports/coimbra.csv</code> is another of the large, gitignored instrument
+exports above, but of its ~1M rows only 35 have anything in <code>strain</code> at
+all (the rest is empty spreadsheet padding). 30 of those 35 are a real,
+dated BG-11-vs-TAP comparison — three strains, each grown in both media,
+sampled at 19/09 18:00 and again four times on 20/09. Per Yatharth, the
+numeric strain codes in the original map to real strain names: <code>77</code> →
+<strong>CC2377</strong>, <code>125</code> → <strong>CC125</strong>, <code>84</code> → <strong>CC2894</strong>. The remaining 5 rows
+(<code>CC125-TAP</code>, <code>CC125-BG11-t0</code>/<code>-t15m</code>/<code>-fix</code>, <code>CC125-mytube</code>) have no date
+recorded and are a separate single-snapshot protocol check, not a growth
+curve — left out entirely, same reasoning as the exclusions above.</p>
+<p>Rather than commit the 33 MB original, those 30 rows are extracted once
+into a small, git-tracked file — <code>raw_exports/coimbra_growth_curves.csv</code> —
+which <code>tools/parse_legacy.py</code> parses directly (see <code>_parse_coimbra_growth</code>);
+<code>coimbra.csv</code> itself stays out of git and unparsed.</p>
+<p><strong>A caveat worth knowing before reading this data</strong>: every strain/media
+condition has a reading at 19/09 18:00, then a reading roughly 60× lower
+at 20/09 08:00 with nothing recorded in between — almost certainly an
+unrecorded dilution or passage step, not real die-off. It's called out
+row-by-row in the extract's own <code>comments</code> column. One consequence: a
+doubling time fit across that gap isn't biologically meaningful, and in
+practice comes out negative/infinite for every one of these six
+conditions — so none of them currently produce a bar on the doubling-time
+chart above; you'll only see this data on the real-time growth chart on
+the home page.</p>
 <h2 id="mutant-media-condition">Mutant, media, condition<a class="headerlink" href="#mutant-media-condition" title="Permanent link">&para;</a></h2>
 <p>A growth curve here is defined by which mutant/strain it is (the <code>strain</code>
 column), which media it was grown in, and optionally some other condition
 (a perturbation like lights off — reserved for the future; nothing in this
-corpus sets it yet). None of the surviving files record media explicitly,
-so every row defaults to <code>media = "TAP"</code>, per Yatharth's "assume TAP
-wherever not mentioned" rule, unless a future file adds its own <code>media</code>
-column.</p>
+corpus sets it yet). Only <code>raw_exports/coimbra_growth_curves.csv</code> records
+its own media (BG-11 or TAP, see above); every other surviving file
+defaults to <code>media = "TAP"</code>, per Yatharth's "assume TAP wherever not
+mentioned" rule, since none of them record it explicitly.</p>
 <h2 id="density-formula">Density formula<a class="headerlink" href="#density-formula" title="Permanent link">&para;</a></h2>
 <p>This site reproduces the original pipeline's (<code>legacy/script/analysis.py</code>)
 <code>normalize_cells_per_ml()</code> exactly, so these numbers match whatever it would
@@ -742,6 +780,10 @@ source files, but was never part of this formula: it appears once in
 read again anywhere in that pipeline. It's dropped from
 <code>build/all_legacy_counts.csv</code> entirely rather than carried through unused —
 it's only read internally, as a signal for detecting placeholder rows.</p>
+<p><code>raw_exports/coimbra_growth_curves.csv</code> is the one exception: its density
+was already computed in the original instrument export by a different
+formula (<code>avg_count × dilution factor × 10,000</code>), so its rows carry that
+value straight through rather than being recomputed by the formula above.</p>
 
 
 
