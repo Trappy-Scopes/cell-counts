@@ -518,10 +518,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-this-data-comes-from-for-now" class="md-nav__link">
+  <a href="#where-this-data-comes-from" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Where this data comes from, for now
+        Where this data comes from
       
     </span>
   </a>
@@ -665,27 +665,59 @@
 <p>A Metaexperiment log is a day-level record shared by every microscope that
 ran that day — separate from a cellcounting.py experiment's own
 <code>experiment.yaml</code> (see <a href="../methodology/">Methodology</a>). Each day typically
-logs, per culture: one <strong>raw density</strong> reading before separation, and one
-<strong>separator density</strong> reading after separating — real calendar dates from
-day one, which is why this page plots against actual date/time rather than
-elapsed hours.</p>
+logs, per culture: one <strong>raw density</strong> reading before separation, and,
+when a separation step was run, one <strong>separator density</strong> reading after
+separating — real calendar dates from day one, which is why this page plots
+against actual date/time rather than elapsed hours.</p>
 <p>There is no mutant/strain field in this stream, only the free-text culture
 label (e.g. <code>Eptx18-5July26</code>), so this page can't join into the
 <a href="../">home page's</a> per-strain dashboard — it shows culture density and
-separation efficiency instead.</p>
-<iframe src="../plots/metaexperiments.html" width="100%" height="600" style="border:none;"
+separation efficiency instead. Most labels only appear on a single day; use
+the filter box above the plot to isolate one or more cultures by label
+instead of relying on a legend.</p>
+<iframe src="../plots/metaexperiments.html" width="100%" height="680" style="border:none;"
         title="Metaexperiment cultures"></iframe>
 
 <p><a class="md-button" href="../plots/metaexperiments.html">Open full screen →</a></p>
-<h2 id="where-this-data-comes-from-for-now">Where this data comes from, for now<a class="headerlink" href="#where-this-data-comes-from-for-now" title="Permanent link">&para;</a></h2>
-<p>This is parsed directly from <code>experiment.yaml</code> in each
-<code>data/metaexperiments/&lt;name&gt;/</code> folder — copied in by hand for now, as a
-worked example, ahead of a proper exporter that will write finished density
-readings straight there. The parser (<code>tools/parse_metaexperiments.py</code>)
-reads through <code>explorer.legacy.ExpExplorer</code>
+<h2 id="where-this-data-comes-from">Where this data comes from<a class="headerlink" href="#where-this-data-comes-from" title="Permanent link">&para;</a></h2>
+<p>This is a bulk export of <code>data/metaexperiments/all_cell_counts.csv</code>, pulled
+from every day-level Metaexperiment under the lab's <code>~/experiments/</code>
+archive (identified by "metaexperiment" appearing in the experiment's
+folder name) via <code>explorer.legacy.ExpExplorer</code>
 (the <a href="https://github.com/Trappy-Scopes/trappy-explorer">trappy-explorer</a>
-package) and needs no changes when that exporter lands — it already just
-globs <code>data/metaexperiments/*/experiment.yaml</code>.</p>
+package, <code>extended_parse=True</code>). <code>tools/parse_metaexperiments.py</code> no longer
+parses <code>experiment.yaml</code> itself — the archive lives on the instrument
+machine and is read strictly read-only, so nothing there is ever copied
+into this repo; the script just validates and re-sorts the checked-in CSV.</p>
+<p>The last export (September 2026) scanned 66 experiments whose folder name
+matched "metaexperiment":</p>
+<ul>
+<li>62 loaded; 4 had a zero-byte <code>experiment.yaml</code> and could not be parsed at
+  all (all four dated 2025-11-13).</li>
+<li>Of the 62 loaded, one (<code>MDev_2025_01_16_tandh_calibration_metaexperiment_*</code>)
+  turned out to be a per-scope run log whose own descriptive title happens
+  to contain the word "metaexperiment" — it carries no <code>cell_counts</code> stream
+  and correctly contributes no rows.</li>
+<li>8 real day-level Metaexperiments declared a <code>cell_counts</code> stream but
+  logged no actual measurements that day (nothing else recorded either, in
+  most of them) — genuinely empty days, not a parsing gap.</li>
+<li>One <code>cell_counts</code> reading (<code>A3-24April26</code>, 2026-04-07 17:17:47) had no
+  computed density; its <code>success</code> field reads <code>None</code> rather than an
+  explicit <code>False</code> (like nearly every reading in this corpus, <code>success</code> is
+  simply never confirmed either way), but a second reading for the same
+  label 20 seconds later did compute a density, so the first is a
+  superseded retake and was dropped from the export rather than kept as a
+  blank.</li>
+<li>The result is 99 <code>cell_counts</code> rows across 53 contributing experiments
+  and 64 distinct culture labels (Feb 2025 – Aug 2026).</li>
+</ul>
+<p>One more thing worth knowing about the export as it stands: the label
+<code>B-B raw</code> is reused across two unrelated early experiments
+(2025-02-19 and 2025-02-20) rather than naming one culture.</p>
+<p>Refreshing this export means re-running the same scan against the
+<code>~/experiments/</code> archive and replacing
+<code>data/metaexperiments/all_cell_counts.csv</code>; <code>tools/parse_metaexperiments.py</code>
+needs no changes to pick up a refreshed file.</p>
 
 
 
