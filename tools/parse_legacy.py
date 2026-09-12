@@ -28,10 +28,20 @@ heterogeneous in ways that matter:
   * three raw instrument exports (raw_exports/coimbra.csv, october24.csv,
     september24.csv) are tens of MB, are not tracked in git
     (see .gitignore), and use a third, incompatible schema entirely
-    (strain, df, count1..5, density_per_mL, ...). They are not covered here;
-    if you want them included, they need converting to template1 first (or
-    this script needs a third branch) and, being large, probably Git LFS or
-    a release asset rather than a plain commit.
+    (strain, df, count1..5, density_per_mL, ...). october24.csv and
+    september24.csv are not covered here - if you want them included, they
+    need converting to template1 first (or another branch like the one
+    below) and, being large, probably Git LFS or a release asset rather
+    than a plain commit.
+
+    coimbra.csv turned out to hold the only BG-11 data in this whole
+    corpus (see "BG-11 media" below) - of its ~1M rows, only 35 have
+    anything in `strain` at all (the rest is empty spreadsheet padding),
+    and of those 35, 30 are a real dated BG-11-vs-TAP comparison. Rather
+    than commit the 33MB original, those 30 rows are extracted once into
+    a small, git-tracked file this script *does* read - see
+    `raw_exports/coimbra_growth_curves.csv` and `_parse_coimbra_growth`
+    below. coimbra.csv itself stays gitignored and unparsed.
 
 Only pure growth curves, by explicit request
 ----------------------------------------------
@@ -51,19 +61,47 @@ density columns in the first place:
     ethanol-fixation volume, dilution, etc. - not a strain/mutant
     comparison), not biological growth curves.
 
-That leaves TheEight.csv as the only legacy growth curve in this corpus:
-four genotypes (CC125, MBO2, ODA1, TPG1) tracked over ~11 days.
+That leaves TheEight.csv (four genotypes - CC125, MBO2, ODA1, TPG1 - over
+~11 days, all TAP) and raw_exports/coimbra_growth_curves.csv (three
+genotypes - CC2377, CC125, CC2894 - each in BG-11 and TAP, over 2 days) as
+the legacy growth curves in this corpus.
+
+BG-11 media
+------------
+raw_exports/coimbra_growth_curves.csv is a curated, git-tracked extract of
+the 30 real data rows buried in the much larger raw_exports/coimbra.csv
+(see above). Per Yatharth: strain codes 77/125/84 in the original are
+CC2377/CC125/CC2894, and only the dated rows are growth curves - 5 further
+undated rows in the original (`CC125-TAP`, `CC125-BG11-t0/-t15m/-fix`,
+`CC125-mytube`) are a separate, single-snapshot protocol check and were
+left out of the extract entirely, same reasoning as EXCLUDED_FILES below.
+
+This is the only place BG-11 appears anywhere in this corpus, and it comes
+with a real caveat worth knowing before reading its numbers: every
+strain/media condition has a reading at 19/09 18:00, then a ~60x lower
+reading at 20/09 08:00 with nothing recorded in between - almost
+certainly an unrecorded dilution/passage step, not actual die-off. That
+gap is called out in the extract's own `comments` column on the affected
+rows, row by row, rather than only in this docstring. It also means a
+doubling-time fit spanning that gap is not biologically meaningful; no
+special-case code drops it, since `_fit_growth_rate` already only reports
+a doubling time when the overall regression slope is positive; a fit
+dominated by that gap comes out non-positive and is filtered out by the
+dashboard's existing `doubling_time_hr > 0` check the same as any other
+bad fit would be, with the gap called out here in case a future point
+makes that automatic filter matter less.
 
 Mutant, media, condition
 --------------------------
 A growth curve here is defined by three things: which mutant/strain it is
 (the existing `strain` column), which media it was grown in, and
 optionally some other special condition (a perturbation like lights off,
-reserved for the future - nothing in this corpus sets it yet). None of the
-surviving files record media explicitly, so - per Yatharth - every row
-defaults to `media = "TAP"` (the lab's standard media) unless a future
-file adds its own `media` column; `condition` is written as an empty
-string until something needs it.
+reserved for the future - nothing in this corpus sets it yet). Only
+raw_exports/coimbra_growth_curves.csv records its own media (BG-11 or
+TAP); every other surviving file defaults to `media = "TAP"` (the lab's
+standard media, per Yatharth's "assume TAP wherever not mentioned" rule)
+since none of them record it explicitly. `condition` is written as an
+empty string until something needs it.
 
 Cell density - unchanged from the original pipeline
 ----------------------------------------------------
@@ -114,6 +152,13 @@ DELIMITERS = [";", ",", "\t"]
 
 DEFAULT_MEDIA = "TAP"
 
+# The curated, git-tracked extract of coimbra.csv's real growth-curve rows
+# (see the module docstring's "BG-11 media" section) - parsed by
+# _parse_coimbra_growth below instead of the generic _parse_file, since its
+# schema (strain, media, date, time, df, avg_count, density_per_mL,
+# comments) is already-aggregated and unrelated to template1's.
+COIMBRA_GROWTH_FILE = "raw_exports/coimbra_growth_curves.csv"
+
 # Files that pass the density-column check but are not growth curves - a
 # protocol test or a counting-method validation run, not a strain/mutant
 # comparison over time - and so are excluded outright, per Yatharth. See
@@ -129,6 +174,10 @@ EXCLUDED_FILES = {
     "raw_exports/YB_E5noEtOH.csv": "counting-protocol development run",
     "raw_exports/YB_N0.csv": "counting-protocol development run",
     "raw_exports/YB_test.csv": "counting-protocol development run",
+    "raw_exports/coimbra.csv":
+        "33MB raw instrument export, not tracked in git; its 30 real "
+        "growth-curve rows are already extracted into "
+        "raw_exports/coimbra_growth_curves.csv, which is parsed instead",
 }
 
 
@@ -267,6 +316,45 @@ def _parse_file(path):
     return out, note
 
 
+def _parse_coimbra_growth(path):
+    """raw_exports/coimbra_growth_curves.csv - see the module docstring's
+    "BG-11 media" section. Already one row per reading with strain, media,
+    date, time, df, avg_count and a precomputed density_per_mL (the
+    original file's own formula - avg_count * df * 10_000 - not this
+    script's v_sample/v_etoh one), so this is a straight column mapping,
+    not a re-derivation. `label` is set to `media`: this file has no
+    recorded replicate id, and media is the only thing that distinguishes
+    the two curves per strain, so it doubles as the colony/replicate label
+    everywhere downstream that groups by (source_file, strain, label)."""
+    df = pd.read_csv(path)
+    n = len(df)
+    timestamps = pd.Series(
+        [_parse_timestamp(d, t) for d, t in zip(df["date"], df["time"])],
+        index=df.index,
+    )
+    media = df["media"].astype(str).str.strip()
+    out = pd.DataFrame({
+        "source_file": os.path.relpath(path, LEGACY_DATA_DIR),
+        "strain": df["strain"].astype(str).str.strip(),
+        "media": media,
+        "condition": [""] * n,
+        "label": media,
+        "date": df["date"],
+        "time": df["time"],
+        "timestamp": timestamps,
+        "exp_time": pd.Series([np.nan] * n),
+        "time_units": pd.Series([""] * n),
+        "avg_count": df["avg_count"].apply(_to_float),
+        "v_sample_ul": pd.Series([np.nan] * n),
+        "v_etoh_ul": pd.Series([np.nan] * n),
+        "density": df["density_per_mL"].apply(_to_float),
+        "comments": df.get("comments", pd.Series([""] * n)).astype(str).replace("nan", ""),
+    })
+    out = out.dropna(subset=["timestamp", "density"])
+    note = f"{len(out)} usable row(s) kept (BG-11 vs TAP comparison, extracted from coimbra.csv)"
+    return out, note
+
+
 def _fit_growth_rate(sub, min_points=3):
     """Log-linear regression of density vs. elapsed hours since this group's
     own first reading - the same method tools/parse_data.py's growth_summary
@@ -300,8 +388,13 @@ def _fit_growth_rate(sub, min_points=3):
 
 
 def _growth_summary(combined):
-    """One row per (source_file, strain, label) with enough points to fit -
-    the legacy-side counterpart of build/all_growth_summary.csv.
+    """One row per (source_file, strain, media, label) with enough points to
+    fit - the legacy-side counterpart of build/all_growth_summary.csv.
+    `media` is in the group key (not just `label`) so that a file recording
+    more than one media for the same strain - only
+    raw_exports/coimbra_growth_curves.csv does today - never gets its BG-11
+    and TAP readings folded into one fit; harmless for every other file,
+    where media is constant per strain anyway.
 
     Skips any group whose time_units reads "mins" - a "doubling time" fit to
     an hour of data would not be biologically meaningful even though the
@@ -311,7 +404,9 @@ def _growth_summary(combined):
     it's kept as a defensive check for whatever gets added next."""
     rows = []
     n_skipped_short = 0
-    for (source_file, strain, label), sub in combined.groupby(["source_file", "strain", "label"]):
+    for (source_file, strain, media, label), sub in combined.groupby(
+        ["source_file", "strain", "media", "label"]
+    ):
         units = sub["time_units"].astype(str).str.strip().str.lower()
         if (units == "mins").any():
             n_skipped_short += 1
@@ -319,12 +414,13 @@ def _growth_summary(combined):
         fit = _fit_growth_rate(sub)
         if fit is None:
             continue
-        rows.append({"source_file": source_file, "strain": strain, "label": label, **fit})
+        rows.append({"source_file": source_file, "strain": strain, "media": media,
+                      "label": label, **fit})
     if n_skipped_short:
         print(f"  ({n_skipped_short} colony/replicate group(s) skipped for growth-rate fitting - "
               f"minute-scale assay, not a growth curve)")
     if not rows:
-        return pd.DataFrame(columns=["source_file", "strain", "label", "n_points",
+        return pd.DataFrame(columns=["source_file", "strain", "media", "label", "n_points",
                                       "growth_rate_per_hr", "growth_rate_per_24hr",
                                       "doubling_time_hr", "r_squared"])
     return pd.DataFrame(rows)
@@ -345,7 +441,10 @@ def main():
             print(f"  {rel}: excluded - {EXCLUDED_FILES[rel]}")
             continue
         try:
-            out, note = _parse_file(path)
+            if rel == COIMBRA_GROWTH_FILE:
+                out, note = _parse_coimbra_growth(path)
+            else:
+                out, note = _parse_file(path)
         except Exception as exc:  # a malformed file must never take the rest down
             print(f"  {path}: SKIPPED ({exc})")
             continue

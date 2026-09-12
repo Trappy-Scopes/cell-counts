@@ -53,8 +53,14 @@ def main():
         return
 
     strains = sorted(df["strain"].unique())
-    colonies = sorted(df[["source_file", "label"]].drop_duplicates().itertuples(index=False))
-    colour_of = {(sf, lb): PALETTE[i % len(PALETTE)] for i, (sf, lb) in enumerate(colonies)}
+    # Keyed by (source_file, strain, label) rather than just (source_file,
+    # label): TheEight.csv's replicate ids happen to be unique across its
+    # own strains, but raw_exports/coimbra_growth_curves.csv reuses "BG-11"
+    # / "TAP" as the label for three different strains (see
+    # tools/parse_legacy.py), so strain has to be part of the key or those
+    # three strains would collide onto the same colour.
+    colonies = sorted(df[["source_file", "strain", "label"]].drop_duplicates().itertuples(index=False))
+    colour_of = {(sf, st, lb): PALETTE[i % len(PALETTE)] for i, (sf, st, lb) in enumerate(colonies)}
 
     p = figure(
         x_axis_type="datetime", y_axis_type="log", height=560, width=980,
@@ -71,7 +77,7 @@ def main():
     js_renderers = []
     for (source_file, strain, label), g in df.groupby(["source_file", "strain", "label"]):
         g = g.sort_values("timestamp")
-        colour = colour_of[(source_file, label)]
+        colour = colour_of[(source_file, strain, label)]
         src = ColumnDataSource(dict(
             x=g["timestamp"], y=g["density"], label=[label] * len(g),
             strain=[strain] * len(g), source_file=[source_file] * len(g),

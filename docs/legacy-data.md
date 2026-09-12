@@ -30,27 +30,58 @@ centrifugation/recovery protocol test, not a growth curve) and
 files (counting-protocol development runs — testing the counting method
 itself, e.g. ethanol-fixation volume, not a strain/mutant comparison). See
 `EXCLUDED_FILES` in `tools/parse_legacy.py` for the exact list and reasons.
-That leaves `TheEight.csv` as the only legacy growth curve in this corpus:
-four genotypes (CC125, MBO2, ODA1, TPG1) tracked over about 11 days.
+That leaves `TheEight.csv` and `raw_exports/coimbra_growth_curves.csv` (see
+below) as the legacy growth curves in this corpus: `TheEight.csv` has four
+genotypes (CC125, MBO2, ODA1, TPG1) tracked over about 11 days, all in TAP.
 
 **Placeholder rows** — a few early rows in `TheEight.csv` are marked "Faux
 Count" with all-zero counts, from before that assay actually started.
 Dropped everywhere.
 
-**Three large instrument exports** (`raw_exports/coimbra.csv`, `october24.csv`,
+**Two large instrument exports** (`raw_exports/october24.csv`,
 `september24.csv`, ~33 MB each) aren't tracked in git at all (see
 `.gitignore`) and use a third, incompatible column schema besides — they're
-out of scope for this parser for now.
+out of scope for this parser for now. A third, `raw_exports/coimbra.csv`,
+turned out to hold real data worth keeping — see the next section.
+
+## BG-11 media, from `coimbra.csv`
+
+`raw_exports/coimbra.csv` is another of the large, gitignored instrument
+exports above, but of its ~1M rows only 35 have anything in `strain` at
+all (the rest is empty spreadsheet padding). 30 of those 35 are a real,
+dated BG-11-vs-TAP comparison — three strains, each grown in both media,
+sampled at 19/09 18:00 and again four times on 20/09. Per Yatharth, the
+numeric strain codes in the original map to real strain names: `77` →
+**CC2377**, `125` → **CC125**, `84` → **CC2894**. The remaining 5 rows
+(`CC125-TAP`, `CC125-BG11-t0`/`-t15m`/`-fix`, `CC125-mytube`) have no date
+recorded and are a separate single-snapshot protocol check, not a growth
+curve — left out entirely, same reasoning as the exclusions above.
+
+Rather than commit the 33 MB original, those 30 rows are extracted once
+into a small, git-tracked file — `raw_exports/coimbra_growth_curves.csv` —
+which `tools/parse_legacy.py` parses directly (see `_parse_coimbra_growth`);
+`coimbra.csv` itself stays out of git and unparsed.
+
+**A caveat worth knowing before reading this data**: every strain/media
+condition has a reading at 19/09 18:00, then a reading roughly 60× lower
+at 20/09 08:00 with nothing recorded in between — almost certainly an
+unrecorded dilution or passage step, not real die-off. It's called out
+row-by-row in the extract's own `comments` column. One consequence: a
+doubling time fit across that gap isn't biologically meaningful, and in
+practice comes out negative/infinite for every one of these six
+conditions — so none of them currently produce a bar on the doubling-time
+chart above; you'll only see this data on the real-time growth chart on
+the home page.
 
 ## Mutant, media, condition
 
 A growth curve here is defined by which mutant/strain it is (the `strain`
 column), which media it was grown in, and optionally some other condition
 (a perturbation like lights off — reserved for the future; nothing in this
-corpus sets it yet). None of the surviving files record media explicitly,
-so every row defaults to `media = "TAP"`, per Yatharth's "assume TAP
-wherever not mentioned" rule, unless a future file adds its own `media`
-column.
+corpus sets it yet). Only `raw_exports/coimbra_growth_curves.csv` records
+its own media (BG-11 or TAP, see above); every other surviving file
+defaults to `media = "TAP"`, per Yatharth's "assume TAP wherever not
+mentioned" rule, since none of them record it explicitly.
 
 ## Density formula
 
@@ -71,3 +102,8 @@ source files, but was never part of this formula: it appears once in
 read again anywhere in that pipeline. It's dropped from
 `build/all_legacy_counts.csv` entirely rather than carried through unused —
 it's only read internally, as a signal for detecting placeholder rows.
+
+`raw_exports/coimbra_growth_curves.csv` is the one exception: its density
+was already computed in the original instrument export by a different
+formula (`avg_count × dilution factor × 10,000`), so its rows carry that
+value straight through rather than being recomputed by the formula above.

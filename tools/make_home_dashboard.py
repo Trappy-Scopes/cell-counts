@@ -183,8 +183,13 @@ def _build_realtime_growth_chart(current_cc, legacy_cc):
 
     mutants = sorted(df["mutant"].unique())
     media_types = sorted(df["media"].unique())
-    colonies = sorted(df[["source", "colony"]].drop_duplicates().itertuples(index=False))
-    colour_of = {(src, col): PALETTE[i % len(PALETTE)] for i, (src, col) in enumerate(colonies)}
+    # Keyed by (source, mutant, colony) rather than just (source, colony):
+    # raw_exports/coimbra_growth_curves.csv reuses "BG-11" / "TAP" as the
+    # colony/replicate label across three different strains (see
+    # tools/parse_legacy.py's "BG-11 media" section), so mutant has to be
+    # part of the key or those three strains would collide onto one colour.
+    colonies = sorted(df[["source", "mutant", "colony"]].drop_duplicates().itertuples(index=False))
+    colour_of = {(src, mu, col): PALETTE[i % len(PALETTE)] for i, (src, mu, col) in enumerate(colonies)}
 
     p = figure(
         x_axis_type="datetime", y_axis_type="log", height=520, width=980,
@@ -202,7 +207,7 @@ def _build_realtime_growth_chart(current_cc, legacy_cc):
     renderer_media = []
     for (source, mutant, media, colony), g in df.groupby(["source", "mutant", "media", "colony"]):
         g = g.sort_values("timestamp")
-        colour = colour_of[(source, colony)]
+        colour = colour_of[(source, mutant, colony)]
         src = ColumnDataSource(dict(
             x=g["timestamp"], y=g["density"], mutant=[mutant] * len(g),
             media=[media] * len(g), colony=[colony] * len(g),

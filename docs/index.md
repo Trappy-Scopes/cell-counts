@@ -17,9 +17,10 @@ to watch for growth-rate drift in a cell line over time. **Growth curves
 over real calendar time** plots every colony's own density readings
 against real date/time (not elapsed hours — different experiments start on
 different dates, so this view only makes sense on a shared calendar axis),
-filterable by **mutant** and by **media**. Current-framework data has no
-recorded media field yet, so it's shown as `TAP` by default (per the "TAP
-unless stated otherwise" convention — see [Legacy data](legacy-data.md)).
+filterable by **mutant** and by **media** — including a real BG-11 vs. TAP
+comparison recovered from legacy data (see [Legacy data](legacy-data.md)).
+Current-framework data has no recorded media field yet, so it's shown as
+`TAP` by default (per the "TAP unless stated otherwise" convention).
 Lab-wide events (an incubator change, a light-intensity change, and so on)
 will show up on this chart as vertical dashed lines once their dates are
 recorded — none are configured yet.

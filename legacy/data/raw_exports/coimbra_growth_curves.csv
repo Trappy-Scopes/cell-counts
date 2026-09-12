@@ -1,0 +1,31 @@
+strain,media,date,time,df,avg_count,density_per_mL,comments
+CC125,BG-11,19/09/24,18:00,2.0,16.0,320000.0,
+CC125,BG-11,20/09/24,08:00,2.0,0.5,10000.0,unrecorded dilution/passage before this reading (source jumps from 19/09 18:00 straight to this point)
+CC125,BG-11,20/09/24,10:00,2.0,0.4,8000.0,
+CC125,BG-11,20/09/24,14:00,2.0,0.4,8000.0,
+CC125,BG-11,20/09/24,18:00,2.0,1.2,24000.0,
+CC125,TAP,19/09/24,18:00,2.0,4.6,92000.0,
+CC125,TAP,20/09/24,08:00,2.0,0.8,16000.0,unrecorded dilution/passage before this reading (source jumps from 19/09 18:00 straight to this point)
+CC125,TAP,20/09/24,10:00,2.0,0.6,12000.0,
+CC125,TAP,20/09/24,14:00,2.0,2.0,40000.0,
+CC125,TAP,20/09/24,18:00,2.0,2.2,44000.0,
+CC2377,BG-11,19/09/24,18:00,2.0,140.5,2810000.0,
+CC2377,BG-11,20/09/24,08:00,2.0,1.6,32000.0,unrecorded dilution/passage before this reading (source jumps from 19/09 18:00 straight to this point)
+CC2377,BG-11,20/09/24,10:00,2.0,0.6,12000.0,
+CC2377,BG-11,20/09/24,14:00,2.0,1.8,36000.0,
+CC2377,BG-11,20/09/24,18:00,2.0,2.2,44000.0,
+CC2377,TAP,19/09/24,18:00,4.0,11.75,470000.0,
+CC2377,TAP,20/09/24,08:00,2.0,1.8,36000.0,unrecorded dilution/passage before this reading (source jumps from 19/09 18:00 straight to this point)
+CC2377,TAP,20/09/24,10:00,2.0,2.0,40000.0,
+CC2377,TAP,20/09/24,14:00,2.0,2.8,56000.0,
+CC2377,TAP,20/09/24,18:00,2.0,3.4,68000.0,
+CC2894,BG-11,19/09/24,18:00,4.0,31.5,1260000.0,
+CC2894,BG-11,20/09/24,08:00,2.0,2.2,44000.0,unrecorded dilution/passage before this reading (source jumps from 19/09 18:00 straight to this point)
+CC2894,BG-11,20/09/24,10:00,2.0,1.2,24000.0,
+CC2894,BG-11,20/09/24,14:00,2.0,2.0,40000.0,
+CC2894,BG-11,20/09/24,18:00,2.0,0.2,4000.0,
+CC2894,TAP,19/09/24,18:00,4.0,50.75,2030000.0,
+CC2894,TAP,20/09/24,08:00,2.0,1.6,32000.0,unrecorded dilution/passage before this reading (source jumps from 19/09 18:00 straight to this point)
+CC2894,TAP,20/09/24,10:00,2.0,2.4,48000.0,
+CC2894,TAP,20/09/24,14:00,2.0,1.2,24000.0,
+CC2894,TAP,20/09/24,18:00,2.0,1.8,36000.0,
