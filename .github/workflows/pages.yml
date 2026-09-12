@@ -38,10 +38,6 @@ jobs:
       - name: Install dependencies
         run: pip install --quiet -r requirements-docs.txt
 
-      - name: Install trappy-explorer (optional - Metaexperiment parsing only)
-        continue-on-error: true
-        run: pip install --quiet "git+https://github.com/Trappy-Scopes/trappy-explorer.git"
-
       - name: Aggregate experiments
         run: |
           python tools/parse_data.py
