@@ -68,5 +68,6 @@ segment_rate = ln(compensated[i+1] / compensated[i]) / Δt_hours
 computed once per consecutive pair, with no re-derivation of fold factors
 needed. `growth_rate_segments()` and `plot_growth_rate_segments()` do
 exactly this, and run automatically for any colony with two or more media
-additions — see `Gptx_segment_growth_rate.png` on the
-[growth curves page](growth-curves.md#per-experiment-detail).
+additions — each experiment's `analysis/` folder has the resulting
+`<colony>_segment_growth_rate.png` for any colony it applies to (see
+[Cell counting experiments](growth-curves.md)).

@@ -6,7 +6,9 @@ edit_uri: ""
 
 nav:
   - Home: index.md
-  - Growth curves: growth-curves.md
+  - Cell counting experiments: growth-curves.md
+  - Metaexperiments: metaexperiments.md
+  - Legacy data: legacy-data.md
   - Methodology: methodology.md
   - The data: data.md
   - All Trappy-Scopes projects: https://trappy-scopes.github.io/

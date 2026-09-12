@@ -1,55 +1,38 @@
 # cell-counts
 
-Cell density measurements for the Trappy-Scopes lab, and the growth-curve
-analysis built on top of them: dilution-compensated density, fitted growth
-rate, doubling time, and — for colonies that get media added repeatedly —
-segment-wise rates across each dilution.
+One place for every cell-density measurement in the lab — cultures logged by
+nutrient, date and mutant line, across however the count was actually taken:
+a dedicated growth-curve experiment, a day's Metaexperiment log, or an old
+hand-kept CSV. Four pages, one per source, plus this dashboard tying them
+together.
 
-## What is here
+## Doubling time, every strain we have a fit for
+
+<iframe src="plots/home_growth_dashboard.html" width="100%" height="560" style="border:none;"
+        title="Doubling time by strain and colony"></iframe>
+
+Current growth-curve experiments (blue) and legacy data (red), grouped by
+strain — this is the view to watch for growth-rate drift in a cell line
+over time. Metaexperiment logs aren't in it: those record one raw and one
+separator density reading per culture per day, not a timeseries a doubling
+time can be fit to, and carry no strain/mutant field to group by (see the
+[Metaexperiments](metaexperiments.md) page). Motility/swimming assays and
+minute-timescale protocol tests (centrifugation, resuspension) are excluded
+from every doubling-time number here for the same reason a stopwatch
+reading isn't a growth rate — see [Methodology](methodology.md) and
+[Legacy data](legacy-data.md) for what's excluded and why.
+
+## The three sources
 
 | | |
 |---|---|
-| Experiments | 1 |
-| Colonies | 5 |
-| Mutant | CC2894 |
-| Span | 2026-08-18 to 2026-08-21 |
-| Growth rate | 0.070 – 0.072 / hr |
-| Doubling time | 9.6 – 10.0 hours |
+| [Cell counting experiments](growth-curves.md) | The current framework: `cellcounting.py` logs counts and media additions through Trappy-Scopes' `Experiment.Construct`, and this site fits dilution-compensated growth curves from them automatically on every push. |
+| [Metaexperiments](metaexperiments.md) | Day-level logs shared across microscopes: a culture's raw density and, when the day includes a separation step, its density after separating. Real calendar dates from day one. |
+| [Legacy data](legacy-data.md) | Hand-kept CSVs from before this framework existed, normalised here into one schema so they plot the same way as everything else. |
 
-## Growth curves
-
-![Growth curves overview](plots/growth_curves_overview.png)
-
-Every colony currently on record, dilution-compensated so that media
-additions read as continuations of the same exponential rather than sudden
-drops. [See the interactive version →](growth-curves.md)
-
-## How an experiment gets here
-
-1. Open an experiment with `create_exp(...)` (wraps `Experiment.Construct`).
-2. Log every count with `new_count(name, *counts, df=..., mutant=..., ...)`,
-   and every media addition with
-   `log_media_addition(name, volume_before_ml, media_added_ml, ...)`. Both
-   take a `date_override` / `time_override` for backfilling records after
-   the fact.
-3. Run `fit_curve()` and `analyse_growth()` — they populate the
-   experiment's `analysis/` folder with the CSVs and figures this site
-   reads.
-4. Copy (or leave) the experiment folder under `data/<experiment-name>/`,
-   commit, and push.
-
-Everything on this site regenerates itself from `data/` on every push —
-nothing above needs to be run again by hand. See [The data](data.md) for
-the repository layout and exactly what `tools/parse_data.py` and
-`tools/make_plots.py` do with it, and [Methodology](methodology.md) for
-what "dilution-compensated" and "growth rate" actually mean.
-
-## Before this framework
-
-Counts used to be entered into per-file CSV templates and processed by a
-fixed set of scripts. That pipeline — and the counts it recorded — is kept
-in `legacy/` (and the `legacy` branch) for reference; see
-`legacy/README.md`.
+See [Methodology](methodology.md) for what "dilution-compensated", "growth
+rate" and "doubling time" actually mean, and [The data](data.md) for a short
+note on where each source's numbers come from.
 
 ---
 

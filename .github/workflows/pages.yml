@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - 'data/**'
+      - 'legacy/data/**'
       - 'tools/**'
       - 'docs/**'
       - 'mkdocs.yml'
@@ -37,17 +38,30 @@ jobs:
       - name: Install dependencies
         run: pip install --quiet -r requirements-docs.txt
 
+      - name: Install trappy-explorer (optional - Metaexperiment parsing only)
+        continue-on-error: true
+        run: pip install --quiet "git+https://github.com/Trappy-Scopes/trappy-explorer.git"
+
       - name: Aggregate experiments
-        run: python tools/parse_data.py
+        run: |
+          python tools/parse_data.py
+          python tools/parse_metaexperiments.py
+          python tools/parse_legacy.py
 
       - name: Make plots
-        run: python tools/make_plots.py
+        run: |
+          python tools/make_plots.py
+          python tools/make_metaexperiment_plots.py
+          python tools/make_legacy_plots.py
+          python tools/make_home_dashboard.py
 
       - name: Stage figures into the site
         run: |
           mkdir -p docs/plots
-          cp plots/*.png docs/plots/
-          cp plots/interactive.html docs/plots/ 2>/dev/null || true
+          cp plots/*.png docs/plots/ 2>/dev/null || true
+          for f in interactive.html metaexperiments.html legacy.html home_growth_dashboard.html; do
+            cp "plots/$f" docs/plots/ 2>/dev/null || true
+          done
           # per-experiment analysis figures cellcounting.py already wrote,
           # so growth-curves.md can link to each experiment's own detail
           for d in data/*/; do

@@ -3,11 +3,12 @@
 Cell density measurements for the Trappy-Scopes lab, and the growth-curve
 analysis built on top of them.
 
-**Published as a site:** https://trappy-scopes.github.io/cell-counts —
-an interactive growth-curve explorer (Bokeh: pan, zoom, hover, click a
-legend entry to hide a colony), plus the same dilution-compensated growth
-rate, doubling time and fold-change analysis as a set of static figures for
-anyone just browsing the repo.
+**Published as a site:** https://trappy-scopes.github.io/cell-counts — one
+dashboard for every cell-density measurement in the lab: the current
+growth-curve experiments (interactive, dilution-compensated), day-level
+Metaexperiment logs, and normalised legacy CSVs, plus a combined
+doubling-time-by-strain view across the current and legacy data on the
+home page.
 
 ## Recording an experiment
 
@@ -56,8 +57,10 @@ continuations of the same exponential rather than sudden drops.
 
 ### Interactive
 
-`plots/interactive.html` — Bokeh, pan/zoom/hover, one tab per experiment,
-click a legend entry to hide or show a colony.
+`plots/interactive.html` — Bokeh, pan/zoom/hover, an experiment
+selector ("all experiments" overlays every colony on one axis, for spotting
+growth-rate drift over calendar time), click a legend entry to hide or show
+a colony.
 
 **GitHub cannot display it.** README HTML is sanitised, and files viewed in
 the repo are shown as source. It's published on the site above, and also

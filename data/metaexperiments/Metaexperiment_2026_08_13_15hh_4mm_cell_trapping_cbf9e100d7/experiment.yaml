@@ -1,0 +1,314 @@
+attribs: {}
+created: 2026-08-13 15:04:36.159634
+eid: cbf9e100d7
+events:
+- attribs: &id001 {}
+  dt: 2026-08-13 15:04:36.285832
+  eid: cbf9e100d7
+  exptime: 0.04489504202501848
+  filename: /Users/byatharth/experiments/Metaexperiment_2026_08_13_15hh_4mm_cell_trapping_cbf9e100d7/cbf9e100d7_report.pdf
+  machinetime: 1786629876285857000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.05139199999393895
+  sid: cbf9e100d7
+  type: filename_created
+- attribs: *id001
+  dt: 2026-08-13 15:04:36.290016
+  eid: cbf9e100d7
+  exptime: 0.04904354200698435
+  machinetime: 1786629876290019000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessionid: cbf9e100d7
+  sessiontime: 0.05555900000035763
+  sid: cbf9e100d7
+  type: session
+- attribs: *id001
+  dt: 2026-08-13 15:04:36.291402
+  eid: cbf9e100d7
+  exptime: 0.050425375025952235
+  machinetime: 1786629876291405000
+  mid: null
+  path: /Users/byatharth/trappyscopes/scripts/longterm/metaexperiment.py
+  payload: scripts/metaexperiment.py
+  payload_kind: scripts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.056945082993479446
+  sid: cbf9e100d7
+  type: payload_added
+- attribs: *id001
+  detections: []
+  dt: 2026-08-13 15:04:36.317750
+  eid: cbf9e100d7
+  exptime: 0.07677495802636258
+  machinetime: 1786629876317752000
+  measureid: 7b92b5a5cb
+  measurements:
+  - temp
+  mid: null
+  monitors:
+  - ch
+  name: tandh
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.08329387500998564
+  sid: cbf9e100d7
+  type: measurement_stream
+- attribs: *id001
+  detections: []
+  dt: 2026-08-13 15:04:36.325837
+  eid: cbf9e100d7
+  exptime: 0.08486120801535435
+  machinetime: 1786629876325839000
+  measureid: 5df800c47b
+  measurements: []
+  mid: null
+  monitors:
+  - last_split
+  - active_periods
+  - max_cells
+  - eid
+  name: cell_fates
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.0913811250065919
+  sid: cbf9e100d7
+  type: measurement_stream
+- attribs: *id001
+  detections: []
+  dt: 2026-08-13 15:04:36.334151
+  eid: cbf9e100d7
+  exptime: 0.09317504201317206
+  machinetime: 1786629876334153000
+  measureid: aaaf801df6
+  measurements: []
+  mid: null
+  monitors:
+  - id
+  name: damaged_devices
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.09969479098799638
+  sid: cbf9e100d7
+  type: measurement_stream
+- attribs: *id001
+  detections: []
+  dt: 2026-08-13 15:04:36.343757
+  eid: cbf9e100d7
+  exptime: 0.10278191702673212
+  machinetime: 1786629876343759000
+  measureid: 0b2b568ad1
+  measurements:
+  - counts
+  mid: null
+  monitors:
+  - df
+  - density
+  - label
+  - sep
+  name: cell_counts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.10930174999521114
+  sid: cbf9e100d7
+  type: measurement_stream
+- attribs: &id002 {}
+  dt: 2026-08-13 15:04:57.276797
+  eid: cbf9e100d7
+  exptime: 5.076564207993215
+  filename: /Users/byatharth/experiments/Metaexperiment_2026_08_13_15hh_4mm_cell_trapping_cbf9e100d7/cbf9e100d7_report.pdf
+  machinetime: 1786629897276830000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 12.936043583002174
+  sid: 97a5a1181e
+  type: filename_created
+- attribs: *id002
+  dt: 2026-08-13 15:04:57.277206
+  eid: cbf9e100d7
+  exptime: 5.076940208004089
+  machinetime: 1786629897277208000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessionid: 97a5a1181e
+  sessiontime: 12.936426833010046
+  sid: 97a5a1181e
+  type: session
+- attribs: *id002
+  dt: 2026-08-13 15:04:57.278129
+  eid: cbf9e100d7
+  exptime: 5.077860332996352
+  machinetime: 1786629897278131000
+  mid: null
+  path: /Users/byatharth/trappyscopes/scripts/longterm/metaexperiment.py
+  payload: scripts/metaexperiment.py
+  payload_kind: scripts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 12.937350416003028
+  sid: 97a5a1181e
+  type: payload_skip
+- attribs: *id002
+  dt: 2026-08-13 15:05:29.537786
+  eid: cbf9e100d7
+  exptime: 37.33888016699348
+  machinetime: 1786629929537870000
+  mid: null
+  note: Ensemble Day 2 with perfsion assay. Comparing ensemble experiments at 4PM
+    with and without perfusion,
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 45.198284624988446
+  sid: 97a5a1181e
+  type: user_note
+- attribs: *id002
+  dt: 2026-08-13 15:05:54.241512
+  eid: cbf9e100d7
+  exptime: 62.043509542010725
+  machinetime: 1786629954241583000
+  mid: null
+  note: Heat treatment of Vania's batch one of devices was completed. About one hour.
+    This is their third use.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 69.90293375001056
+  sid: 97a5a1181e
+  type: user_note
+- attribs: *id002
+  dt: 2026-08-13 15:06:03.434001
+  eid: cbf9e100d7
+  exptime: 71.2362778329989
+  machinetime: 1786629963434040000
+  mid: null
+  note: Beggining UVA treatment and checking cells.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 79.09573620799347
+  sid: 97a5a1181e
+  type: user_note
+- attribs: *id002
+  dt: 2026-08-13 15:29:34.421629
+  eid: cbf9e100d7
+  exptime: 1482.284540499997
+  machinetime: 1786631374424905000
+  mid: null
+  note: Centrifugation finished at 15:29. Light separating cells for 1 hour.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 1490.1435483749956
+  sid: 97a5a1181e
+  type: user_note
+- attribs: *id002
+  dt: 2026-08-13 16:02:38.007856
+  eid: cbf9e100d7
+  exptime: 3465.9447779580078
+  machinetime: 1786633358011227000
+  mid: null
+  note: 15mL of culture was used. Rest was passaged.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 3473.8040008329845
+  sid: 97a5a1181e
+  type: user_note
+- attribs: *id002
+  dt: 2026-08-14 12:40:19.302277
+  eid: cbf9e100d7
+  exptime: 23143.383255333
+  machinetime: 1786707619302478000
+  mid: null
+  note: Measuring cylinder was at 50mL, when I started, Set flow to (5,55) pulse with
+    a speed of 0.073. All eight microscopes in operation. Perfusion active on cluster1
+    and disabled on cluster2.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 23151.24267816599
+  sid: 97a5a1181e
+  type: user_note
+- attribs: *id002
+  dt: 2026-08-14 12:41:09.740494
+  eid: cbf9e100d7
+  exptime: 23193.823532166018
+  machinetime: 1786707669740519000
+  mid: null
+  note: Selected culture was Eptx. It was clean and motile.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 23201.68300566601
+  sid: 97a5a1181e
+  type: user_note
+- attribs: *id002
+  dt: 2026-08-14 12:42:01.357541
+  eid: cbf9e100d7
+  exptime: 23245.44291433302
+  machinetime: 1786707721357572000
+  mid: null
+  note: 'Culture density is: 3.80e+05'
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 23253.302389874007
+  sid: 97a5a1181e
+  type: user_note
+name: Metaexperiment_2026_08_13_15hh_4mm_cell_trapping_cbf9e100d7
+results:
+- attribs: {}
+  counts: !!python/tuple
+  - 12
+  - 32
+  - 25
+  - 7
+  density: 380000.0
+  df: 2
+  dt: 2026-08-14 12:41:53.614346
+  eid: cbf9e100d7
+  exptime: 23237.699295041006
+  label: Eptx18-5July26
+  machinetime: 1786707713614333000
+  measureid: 0b2b568ad1
+  measureidx: 0
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sep: false
+  sessiontime: 23245.558769124007
+  sid: cbf9e100d7
+  success: null
+  type: measurement
+- attribs: {}
+  counts: !!python/tuple
+  - 1
+  - 2
+  - 2
+  - 0
+  - 2
+  density: 21000.0
+  df: 1.5
+  dt: 2026-08-14 12:43:04.836252
+  eid: cbf9e100d7
+  exptime: 23308.924424416007
+  label: Eptx18-5July26
+  machinetime: 1786707784836237000
+  measureid: 0b2b568ad1
+  measureidx: 1
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sep: true
+  sessiontime: 23316.78390624901
+  sid: cbf9e100d7
+  success: null
+  type: measurement
+syspermastate:
+  hostname: macair-yatharth.igc.gulbenkian.pt
+  mac_address: 32:4E:DE:97:04:10
+  os:
+  - Darwin
+  - 24.6.0
+user:
+  login_time: 2026-08-13 15:04:44.314209
+  user: YB

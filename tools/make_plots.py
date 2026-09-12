@@ -129,12 +129,27 @@ def plot_doubling_time_summary(gs):
 
 
 def plot_interactive(cc, ma):
-    """Bokeh: one tab per experiment, one renderer per colony, hover for
-    exact values, click a legend entry to hide/show that colony, triangles
-    mark media-addition events."""
+    """Bokeh: a single combined dashboard across every cellcounting.py
+    experiment, not one tab per experiment - so growth-rate drift between
+    experiments (run at different calendar times) is visible on one axis.
+
+    Two stacked figures share every renderer and the same colony colours:
+    elapsed time (hours since that colony's own first reading - the natural
+    axis for a single growth curve) on top, real calendar date/time on the
+    bottom (the natural axis for spotting drift between experiments run
+    weeks or months apart). A Select box above both - "All experiments" plus
+    one entry per experiment - shows/hides renderers in both figures at
+    once via a CustomJS filter (this page has no Python server, so the
+    filter has to run client-side); "All experiments" is the combined
+    dashboard the growth-rate-drift question actually needs.
+
+    Dilution/media-addition events are drawn as inverted triangles on the
+    colony's own line, on both axes.
+    """
     try:
         from bokeh.plotting import figure, output_file, save
-        from bokeh.models import ColumnDataSource, HoverTool, TabPanel, Tabs
+        from bokeh.models import ColumnDataSource, HoverTool, Select, CustomJS
+        from bokeh.layouts import column
     except ImportError:
         print("bokeh not installed - skipping interactive.html")
         return
@@ -142,77 +157,97 @@ def plot_interactive(cc, ma):
         return
 
     tools = "pan,box_zoom,wheel_zoom,reset,save"
+    experiments = sorted(cc["experiment_name"].unique())
+    labels = sorted(cc["label"].unique())
+    colour_of_label = {lb: PALETTE[i % len(PALETTE)] for i, lb in enumerate(labels)}
 
-    tabs = []
-    for exp_name, exp_cc in cc.groupby("experiment_name"):
-        p = figure(
-            y_axis_type="log", height=480, width=980, tools=tools,
-            title=f"{exp_name} — drag to pan, scroll to zoom, "
-                  "click a legend entry to hide/show it",
-            x_axis_label="elapsed time (hours, per colony)",
-            y_axis_label="density (cells/mL, dilution-compensated)",
-        )
+    fig_elapsed = figure(
+        y_axis_type="log", height=440, width=980, tools=tools,
+        title="Elapsed time per colony — drag to pan, scroll to zoom, "
+              "click a legend entry to hide/show it",
+        x_axis_label="elapsed time (hours, since that colony's own first reading)",
+        y_axis_label="density (cells/mL, dilution-compensated)",
+    )
+    fig_datetime = figure(
+        x_axis_type="datetime", y_axis_type="log", height=440, width=980, tools=tools,
+        title="Real date/time, every experiment on one axis — for spotting growth-rate drift over calendar time",
+        x_axis_label="date / time",
+        y_axis_label="density (cells/mL, dilution-compensated)",
+    )
 
-        labels = sorted(exp_cc["label"].unique())
-        colour_of_label = {lb: PALETTE[i % len(PALETTE)] for i, lb in enumerate(labels)}
+    js_renderers = []  # every renderer that should respond to the Select box
 
-        for label, g in exp_cc.groupby("label"):
-            g = g.sort_values("elapsed_hours")
-            mutant = g["mutant"].iloc[0] if "mutant" in g else None
-            colour = colour_of_label[label]
-            src = ColumnDataSource(dict(
-                x=g["elapsed_hours"], y=g["compensated_density"],
-                raw=g["density"], label=[label] * len(g),
-                mutant=[str(mutant)] * len(g),
-                perturbed=[str(bool(p)) for p in g.get("perturbed", [False] * len(g))],
-                ts=g["timestamp"].astype(str),
-            ))
-            renderer = p.line("x", "y", source=src, line_width=1.6,
-                               color=colour, legend_label=f"{label} ({mutant})")
-            p.scatter("x", "y", source=src, size=5, color=colour,
-                       marker="circle", legend_label=f"{label} ({mutant})")
-            p.add_tools(HoverTool(
-                renderers=[renderer],
-                tooltips=[("colony", "@label"), ("mutant", "@mutant"),
-                          ("time", "@ts"), ("density (compensated)", "@y{%.2e}"),
-                          ("raw density", "@raw{%.2e}"),
-                          ("perturbed", "@perturbed")],
-                formatters={"@y": "printf", "@raw": "printf"},
-                mode="mouse",
-            ))
+    for (exp_name, label), g in cc.groupby(["experiment_name", "label"]):
+        g = g.sort_values("elapsed_hours")
+        mutant = g["mutant"].iloc[0] if "mutant" in g else None
+        colour = colour_of_label[label]
+        legend = f"{label} ({mutant}) — {exp_name}" if len(experiments) > 1 else f"{label} ({mutant})"
+        src = ColumnDataSource(dict(
+            x_elapsed=g["elapsed_hours"], x_datetime=g["timestamp"],
+            y=g["compensated_density"], raw=g["density"],
+            label=[label] * len(g), mutant=[str(mutant)] * len(g),
+            experiment=[exp_name] * len(g),
+            perturbed=[str(bool(p)) for p in g.get("perturbed", [False] * len(g))],
+            ts=g["timestamp"].astype(str),
+        ))
+        hover_tooltips = [("colony", "@label"), ("mutant", "@mutant"),
+                          ("experiment", "@experiment"), ("time", "@ts"),
+                          ("density (compensated)", "@y{%.2e}"),
+                          ("raw density", "@raw{%.2e}"), ("perturbed", "@perturbed")]
+        for fig, xcol in ((fig_elapsed, "x_elapsed"), (fig_datetime, "x_datetime")):
+            r_line = fig.line(xcol, "y", source=src, line_width=1.6, color=colour,
+                               legend_label=legend)
+            r_line.tags = [exp_name]
+            r_pts = fig.scatter(xcol, "y", source=src, size=5, color=colour,
+                                 marker="circle", legend_label=legend)
+            r_pts.tags = [exp_name]
+            fig.add_tools(HoverTool(renderers=[r_pts], tooltips=hover_tooltips,
+                                     formatters={"@y": "printf", "@raw": "printf"}, mode="mouse"))
+            js_renderers += [r_line, r_pts]
 
-            if ma is not None:
-                events = ma[(ma["experiment_name"] == exp_name) & (ma["label"] == label)]
-                if not events.empty:
-                    # match each event to the nearest reading on this colony's
-                    # own curve so the marker sits on the line, not floating
-                    xs, ys, details = [], [], []
-                    for row in events.itertuples():
-                        idx = (g["timestamp"] - row.timestamp).abs().idxmin()
-                        xs.append(g.loc[idx, "elapsed_hours"])
-                        ys.append(g.loc[idx, "compensated_density"])
-                        details.append(
-                            f"{row.media_added_ml} mL into {row.volume_before_ml} mL "
-                            f"(dilution {row.dilution_fraction:.2f})"
-                        )
-                    esrc = ColumnDataSource(dict(x=xs, y=ys, detail=details))
-                    tri = p.scatter("x", "y", source=esrc, size=11, color=colour,
-                                     marker="inverted_triangle",
-                                     line_color="white", line_width=0.5)
-                    p.add_tools(HoverTool(renderers=[tri],
-                                           tooltips=[("media added", "@detail")]))
+        if ma is not None:
+            events = ma[(ma["experiment_name"] == exp_name) & (ma["label"] == label)]
+            if not events.empty:
+                xs_e, xs_d, ys, details = [], [], [], []
+                for row in events.itertuples():
+                    idx = (g["timestamp"] - row.timestamp).abs().idxmin()
+                    xs_e.append(g.loc[idx, "elapsed_hours"])
+                    xs_d.append(g.loc[idx, "timestamp"])
+                    ys.append(g.loc[idx, "compensated_density"])
+                    details.append(
+                        f"{row.media_added_ml} mL into {row.volume_before_ml} mL "
+                        f"(dilution {row.dilution_fraction:.2f})"
+                    )
+                esrc = ColumnDataSource(dict(x_elapsed=xs_e, x_datetime=xs_d, y=ys, detail=details))
+                for fig, xcol in ((fig_elapsed, "x_elapsed"), (fig_datetime, "x_datetime")):
+                    tri = fig.scatter(xcol, "y", source=esrc, size=11, color=colour,
+                                       marker="inverted_triangle", line_color="white",
+                                       line_width=0.5)
+                    tri.tags = [exp_name]
+                    fig.add_tools(HoverTool(renderers=[tri], tooltips=[("media added", "@detail")]))
+                    js_renderers.append(tri)
 
-        p.toolbar.logo = None
-        p.legend.click_policy = "hide"
-        p.legend.label_text_font_size = "8pt"
-        p.legend.location = "top_left"
-        p.xgrid.grid_line_color = GRID
-        p.ygrid.grid_line_color = GRID
-        tabs.append(TabPanel(child=p, title=exp_name))
+    for fig in (fig_elapsed, fig_datetime):
+        fig.toolbar.logo = None
+        fig.legend.click_policy = "hide"
+        fig.legend.label_text_font_size = "8pt"
+        fig.legend.location = "top_left"
+        fig.xgrid.grid_line_color = GRID
+        fig.ygrid.grid_line_color = GRID
+
+    select = Select(title="Experiment", value="All experiments",
+                     options=["All experiments"] + experiments)
+    select.js_on_change("value", CustomJS(args=dict(renderers=js_renderers), code="""
+        const chosen = cb_obj.value;
+        for (const r of renderers) {
+            const tag = r.tags.length ? r.tags[0] : null;
+            r.visible = (chosen === "All experiments") || (tag === chosen);
+        }
+    """))
 
     output_file(f"{OUT}/interactive.html",
                 title="cell-counts — growth curve explorer", mode="inline")
-    save(Tabs(tabs=tabs))
+    save(column(select, fig_elapsed, fig_datetime, sizing_mode="stretch_width"))
 
 
 def main():
