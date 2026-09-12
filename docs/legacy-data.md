@@ -3,7 +3,8 @@
 Counts kept by hand in per-file CSVs before this repo adopted the
 Trappy-Scopes framework — heterogeneous in format, normalised here into one
 schema (`tools/parse_legacy.py`) so they plot the same way as everything
-else. See `legacy/README.md` for the original pipeline these came from.
+else. This page is pure growth curves only — see `legacy/README.md` for
+the original pipeline these came from, and below for what that excludes.
 
 <iframe src="../plots/legacy.html" width="100%" height="620" style="border:none;"
         title="Legacy data explorer"></iframe>
@@ -13,18 +14,24 @@ else. See `legacy/README.md` for the original pipeline these came from.
 ## What's excluded, and why
 
 **Motility/swimming assays** — a handful of legacy files record the
-fraction of cells swimming (`*_swimmers` / `*_total` columns), not density.
-That's a different measurement entirely; this page and the doubling-time
-dashboard on the [home page](index.md) never read those columns, so those
-files simply contribute nothing rather than being force-fit into a density
-plot.
+fraction of cells swimming (`*_swimmers` / `*_total` columns), not density
+— `10pow4exp1.csv`, `10pow4exp2.csv`,
+`resuspension_deflaggalation_assay_exp1.csv`. That's a different
+measurement entirely; this parser only ever reads density columns and
+never looks at the swimming ones, so these files simply have none of the
+columns it needs and are skipped rather than force-fit into a density plot.
 
-**Minute-timescale protocol tests** — `centrifugation_10pow4_RepAB_Controls.csv`
-records density before/after centrifugation and a wait under a light
-source, over about an hour — a real, useful measurement, but not a growth
-curve, so it's excluded from the doubling-time dashboard specifically
-(fitting exponential growth to 60 minutes of data produces a number, just
-not a biologically meaningful one). It's still plotted above.
+**Centrifugation and counting-protocol runs** — per Yatharth, this page is
+pure growth curves only, so a few files that do have the right density
+columns are excluded outright rather than merely kept-but-not-fit:
+`raw_exports/centrifugation_10pow4_RepAB_Controls.csv` (a ~1-hour
+centrifugation/recovery protocol test, not a growth curve) and
+`ProtocolGrowthCurve_Exp1_F13Xseries.csv` plus the small `raw_exports/YB_*.csv`
+files (counting-protocol development runs — testing the counting method
+itself, e.g. ethanol-fixation volume, not a strain/mutant comparison). See
+`EXCLUDED_FILES` in `tools/parse_legacy.py` for the exact list and reasons.
+That leaves `TheEight.csv` as the only legacy growth curve in this corpus:
+four genotypes (CC125, MBO2, ODA1, TPG1) tracked over about 11 days.
 
 **Placeholder rows** — a few early rows in `TheEight.csv` are marked "Faux
 Count" with all-zero counts, from before that assay actually started.
@@ -34,6 +41,16 @@ Dropped everywhere.
 `september24.csv`, ~33 MB each) aren't tracked in git at all (see
 `.gitignore`) and use a third, incompatible column schema besides — they're
 out of scope for this parser for now.
+
+## Mutant, media, condition
+
+A growth curve here is defined by which mutant/strain it is (the `strain`
+column), which media it was grown in, and optionally some other condition
+(a perturbation like lights off — reserved for the future; nothing in this
+corpus sets it yet). None of the surviving files record media explicitly,
+so every row defaults to `media = "TAP"`, per Yatharth's "assume TAP
+wherever not mentioned" rule, unless a future file adds its own `media`
+column.
 
 ## Density formula
 

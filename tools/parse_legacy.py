@@ -33,6 +33,38 @@ heterogeneous in ways that matter:
     this script needs a third branch) and, being large, probably Git LFS or
     a release asset rather than a plain commit.
 
+Only pure growth curves, by explicit request
+----------------------------------------------
+Even among the files with the right density columns, a few are not growth
+curves at all and are excluded outright (see EXCLUDED_FILES below), on top
+of the motility-only files above that were already excluded for lacking
+density columns in the first place:
+
+  * raw_exports/centrifugation_10pow4_RepAB_Controls.csv - a ~1-hour
+    centrifugation/recovery protocol test, not a growth curve (it was
+    already excluded from _growth_summary's doubling-time fit for the same
+    reason; now excluded from the counts file too, so it no longer shows up
+    in the legacy plot either).
+  * ProtocolGrowthCurve_Exp1_F13Xseries.csv, raw_exports/YB_E0.csv,
+    YB_E4.csv, YB_E4noEtOH.csv, YB_E5noEtOH.csv, YB_N0.csv, YB_test.csv -
+    counting-protocol development runs (validating the protocol itself -
+    ethanol-fixation volume, dilution, etc. - not a strain/mutant
+    comparison), not biological growth curves.
+
+That leaves TheEight.csv as the only legacy growth curve in this corpus:
+four genotypes (CC125, MBO2, ODA1, TPG1) tracked over ~11 days.
+
+Mutant, media, condition
+--------------------------
+A growth curve here is defined by three things: which mutant/strain it is
+(the existing `strain` column), which media it was grown in, and
+optionally some other special condition (a perturbation like lights off,
+reserved for the future - nothing in this corpus sets it yet). None of the
+surviving files record media explicitly, so - per Yatharth - every row
+defaults to `media = "TAP"` (the lab's standard media) unless a future
+file adds its own `media` column; `condition` is written as an empty
+string until something needs it.
+
 Cell density - unchanged from the original pipeline
 ----------------------------------------------------
 This reproduces legacy/script/analysis.py's normalize_cells_per_ml() exactly:
@@ -56,8 +88,9 @@ internally, purely as a signal for detecting placeholder rows (see
 
 Output (repo root, gitignored, rebuilt on every run):
     build/all_legacy_counts.csv
-        source_file, strain, label, date, time, timestamp, exp_time,
-        time_units, avg_count, v_sample_ul, v_etoh_ul, density, comments
+        source_file, strain, media, condition, label, date, time, timestamp,
+        exp_time, time_units, avg_count, v_sample_ul, v_etoh_ul, density,
+        comments
 
 Standard library + pandas. Run from the repo root.
 """
@@ -78,6 +111,25 @@ HCM_CONSTANTS = {"total_vol_ml": 0.00040}
 REQUIRED_COLUMNS = {"count1", "count2", "count3", "count4", "date", "strain", "replicate"}
 
 DELIMITERS = [";", ",", "\t"]
+
+DEFAULT_MEDIA = "TAP"
+
+# Files that pass the density-column check but are not growth curves - a
+# protocol test or a counting-method validation run, not a strain/mutant
+# comparison over time - and so are excluded outright, per Yatharth. See
+# the module docstring for why each one specifically.
+EXCLUDED_FILES = {
+    "raw_exports/centrifugation_10pow4_RepAB_Controls.csv":
+        "centrifugation/recovery protocol test, not a growth curve",
+    "ProtocolGrowthCurve_Exp1_F13Xseries.csv":
+        "counting-protocol development run, not a strain comparison",
+    "raw_exports/YB_E0.csv": "counting-protocol development run",
+    "raw_exports/YB_E4.csv": "counting-protocol development run",
+    "raw_exports/YB_E4noEtOH.csv": "counting-protocol development run",
+    "raw_exports/YB_E5noEtOH.csv": "counting-protocol development run",
+    "raw_exports/YB_N0.csv": "counting-protocol development run",
+    "raw_exports/YB_test.csv": "counting-protocol development run",
+}
 
 
 def _sniff_and_read(path):
@@ -177,9 +229,21 @@ def _parse_file(path):
     timestamps = pd.Series(timestamps, index=kept.index)
     n_bad_dates = int(timestamps.isna().sum())
 
+    # media: use the file's own column if it ever has one; otherwise every
+    # row defaults to DEFAULT_MEDIA (see module docstring). condition is
+    # reserved for a future perturbation label (e.g. "lights off") - nothing
+    # in this corpus sets it yet, so it's blank.
+    if "media" in kept.columns:
+        media = kept["media"].astype(str).str.strip()
+    else:
+        media = pd.Series([DEFAULT_MEDIA] * len(kept), index=kept.index)
+    condition = kept.get("condition", pd.Series([""] * len(kept), index=kept.index)).astype(str)
+
     out = pd.DataFrame({
         "source_file": os.path.relpath(path, LEGACY_DATA_DIR),
         "strain": kept.get("strain", pd.Series(dtype=str)).astype(str).str.strip(),
+        "media": media,
+        "condition": condition,
         "label": kept.get("replicate", pd.Series(dtype=str)).astype(str).str.strip(),
         "date": kept.get("date"),
         "time": kept.get("time"),
@@ -239,13 +303,12 @@ def _growth_summary(combined):
     """One row per (source_file, strain, label) with enough points to fit -
     the legacy-side counterpart of build/all_growth_summary.csv.
 
-    Skips any group whose time_units reads "mins": a handful of files (e.g.
-    centrifugation_10pow4_RepAB_Controls.csv) record density before/after a
-    ~60-minute centrifugation or resuspension step, not a growth curve - a
-    "doubling time" fit to 60 minutes of data is not a biologically
-    meaningful number (cells do not double in 40 minutes) even though the
-    regression happily produces one. Excluded from this fit, not from the
-    legacy counts file - the raw points are still there to look at."""
+    Skips any group whose time_units reads "mins" - a "doubling time" fit to
+    an hour of data would not be biologically meaningful even though the
+    regression happily produces one. Nothing in the corpus currently hits
+    this (the one file that did, the centrifugation protocol test, is now
+    excluded outright by EXCLUDED_FILES - see the module docstring), but
+    it's kept as a defensive check for whatever gets added next."""
     rows = []
     n_skipped_short = 0
     for (source_file, strain, label), sub in combined.groupby(["source_file", "strain", "label"]):
@@ -277,12 +340,15 @@ def main():
     frames = []
     print(f"scanning {len(paths)} file(s) under {LEGACY_DATA_DIR}/")
     for path in paths:
+        rel = os.path.relpath(path, LEGACY_DATA_DIR)
+        if rel in EXCLUDED_FILES:
+            print(f"  {rel}: excluded - {EXCLUDED_FILES[rel]}")
+            continue
         try:
             out, note = _parse_file(path)
         except Exception as exc:  # a malformed file must never take the rest down
             print(f"  {path}: SKIPPED ({exc})")
             continue
-        rel = os.path.relpath(path, LEGACY_DATA_DIR)
         if out is None:
             print(f"  {rel}: skipped - {note}")
             continue

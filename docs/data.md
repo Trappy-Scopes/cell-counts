@@ -5,7 +5,7 @@ push — nothing here needs to be run again by hand.
 
 ```
 data/<experiment-name>/        one cellcounting.py experiment (Experiment.Construct)
-data/metaexperiments/<name>/   a copied-in Metaexperiment experiment.yaml (see Metaexperiments)
+data/metaexperiments/          all_cell_counts.csv, a bulk export from ~/experiments (see Metaexperiments)
 legacy/data/                   pre-framework CSVs (see Legacy data)
 
 tools/parse_data.py            data/*/analysis/*.csv          -> build/all_*.csv
@@ -25,6 +25,6 @@ artifact. Each experiment's own `analysis/*.csv` and `*.png`, under
 `data/<experiment>/`, **are** tracked — they're `cellcounting.py`'s primary
 output, not a build artifact of this site.
 
-See [Metaexperiments](metaexperiments.md#where-this-data-comes-from-for-now)
+See [Metaexperiments](metaexperiments.md#where-this-data-comes-from)
 and [Legacy data](legacy-data.md#whats-excluded-and-why) for what those two
 sources' parsers do and don't cover.

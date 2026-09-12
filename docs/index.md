@@ -6,21 +6,32 @@ a dedicated growth-curve experiment, a day's Metaexperiment log, or an old
 hand-kept CSV. Four pages, one per source, plus this dashboard tying them
 together.
 
-## Doubling time, every strain we have a fit for
+## Growth, every strain we have data for
 
-<iframe src="plots/home_growth_dashboard.html" width="100%" height="560" style="border:none;"
-        title="Doubling time by strain and colony"></iframe>
+<iframe src="plots/home_growth_dashboard.html" width="100%" height="1160" style="border:none;"
+        title="Doubling time and growth curves, by strain"></iframe>
 
-Current growth-curve experiments (blue) and legacy data (red), grouped by
-strain — this is the view to watch for growth-rate drift in a cell line
-over time. Metaexperiment logs aren't in it: those record one raw and one
+Two charts. **Doubling time by strain and colony** — current growth-curve
+experiments (blue) and legacy data (red), grouped by strain — is the view
+to watch for growth-rate drift in a cell line over time. **Growth curves
+over real calendar time** plots every colony's own density readings
+against real date/time (not elapsed hours — different experiments start on
+different dates, so this view only makes sense on a shared calendar axis),
+filterable by **mutant** and by **media**. Current-framework data has no
+recorded media field yet, so it's shown as `TAP` by default (per the "TAP
+unless stated otherwise" convention — see [Legacy data](legacy-data.md)).
+Lab-wide events (an incubator change, a light-intensity change, and so on)
+will show up on this chart as vertical dashed lines once their dates are
+recorded — none are configured yet.
+
+Metaexperiment logs aren't in either chart: those record one raw and one
 separator density reading per culture per day, not a timeseries a doubling
-time can be fit to, and carry no strain/mutant field to group by (see the
-[Metaexperiments](metaexperiments.md) page). Motility/swimming assays and
-minute-timescale protocol tests (centrifugation, resuspension) are excluded
-from every doubling-time number here for the same reason a stopwatch
-reading isn't a growth rate — see [Methodology](methodology.md) and
-[Legacy data](legacy-data.md) for what's excluded and why.
+time (or a growth curve) can be fit to, and carry no strain/mutant field to
+group by (see the [Metaexperiments](metaexperiments.md) page). Motility/
+swimming assays, minute-timescale protocol tests (centrifugation,
+resuspension), and counting-protocol development runs are excluded from
+both charts entirely — see [Legacy data](legacy-data.md) for the full list
+and why.
 
 ## The three sources
 
