@@ -47,5 +47,10 @@ count_norm = avg_count × (v_sample_ul + v_etoh_ul) / v_sample_ul
 density    = count_norm / 0.00040
 ```
 
-`inv_dil` is carried through in `build/all_legacy_counts.csv` as its own
-column, unchanged from the source file, but is not part of this formula.
+`inv_dil` (the dilution a sample was prepared at before counting, recorded
+as its reciprocal — 1000 means diluted 1:1000) is a real column in the
+source files, but was never part of this formula: it appears once in
+`legacy/script/analysis.py` as a documented dataclass field and is never
+read again anywhere in that pipeline. It's dropped from
+`build/all_legacy_counts.csv` entirely rather than carried through unused —
+it's only read internally, as a signal for detecting placeholder rows.

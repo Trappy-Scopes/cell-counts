@@ -41,18 +41,23 @@ This reproduces legacy/script/analysis.py's normalize_cells_per_ml() exactly:
     count_norm      = avg_count * (v_sample_ul + v_etoh_ul) / v_sample_ul
     density         = count_norm / HCM_CONSTANTS["total_vol_ml"]
 
-`inv_dil` is read and carried through in the output (it's a real column in
-the source files) but is *not* multiplied into `density` - an earlier
-version of this script did that, on the assumption that `inv_dil` was a
-counting dilution the original pipeline had forgotten to apply. That
-assumption was wrong, per Yatharth - reverted, so these numbers match
-whatever the old pipeline would have reported for the same files.
+`inv_dil` (a real column in the source files - the dilution the sample was
+prepared at before counting, recorded as its reciprocal: 1000 means diluted
+1:1000) is not part of this formula, and never was: it appears exactly once
+in legacy/script/analysis.py, as a dataclass field with a comment
+documenting what it means, and is never read again anywhere in that file or
+in main.py. An earlier version of *this* script assumed it was a forgotten
+multiplier and applied it - that assumption was wrong, per Yatharth; the
+fix was to stop applying it, and it is now dropped from the output
+entirely rather than carried through unused, since it was never part of
+any calculation to begin with. The raw `inv_dil` value is still read
+internally, purely as a signal for detecting placeholder rows (see
+`all_zero_untagged` below) - it just isn't exposed as a column.
 
 Output (repo root, gitignored, rebuilt on every run):
     build/all_legacy_counts.csv
         source_file, strain, label, date, time, timestamp, exp_time,
-        time_units, avg_count, inv_dil, v_sample_ul, v_etoh_ul, density,
-        comments
+        time_units, avg_count, v_sample_ul, v_etoh_ul, density, comments
 
 Standard library + pandas. Run from the repo root.
 """
@@ -158,9 +163,9 @@ def _parse_file(path):
 
     v_sample = kept.get("v_sample_ul", pd.Series(dtype=float)).apply(_to_float)
     v_etoh = kept.get("v_etoh_ul", pd.Series(dtype=float)).apply(_to_float)
-    # inv_dil is carried through as a column (see module docstring) but is not
-    # part of the density calculation - matches legacy/script/analysis.py.
-    inv_dil = kept.get("inv_dil", pd.Series(dtype=float)).apply(_to_float)
+    # inv_dil is read above only to help flag placeholder rows - it's not
+    # part of the density calculation (see module docstring) and is dropped
+    # entirely from the output below, not carried through.
 
     count_norm = avg_count * (v_sample + v_etoh) / v_sample
     density = count_norm / HCM_CONSTANTS["total_vol_ml"]
@@ -182,7 +187,6 @@ def _parse_file(path):
         "exp_time": kept.get("exp_time", pd.Series(dtype=float)).apply(_to_float),
         "time_units": kept.get("time_units", pd.Series([""] * len(kept))).astype(str),
         "avg_count": avg_count,
-        "inv_dil": inv_dil,
         "v_sample_ul": v_sample,
         "v_etoh_ul": v_etoh,
         "density": density,

@@ -75,7 +75,7 @@ def main():
         src = ColumnDataSource(dict(
             x=g["timestamp"], y=g["density"], label=[label] * len(g),
             strain=[strain] * len(g), source_file=[source_file] * len(g),
-            ts=g["timestamp"].astype(str), inv_dil=g["inv_dil"],
+            ts=g["timestamp"].astype(str),
         ))
         r_line = p.line("x", "y", source=src, line_width=1.4, color=colour)
         r_line.tags = [strain]
@@ -84,7 +84,7 @@ def main():
         p.add_tools(HoverTool(renderers=[r_pts], tooltips=[
             ("colony/replicate", "@label"), ("strain", "@strain"),
             ("source file", "@source_file"), ("time", "@ts"),
-            ("density", "@y{%.2e}"), ("inv_dil", "@inv_dil"),
+            ("density", "@y{%.2e}"),
         ], formatters={"@y": "printf"}, mode="mouse"))
         js_renderers += [r_line, r_pts]
 
