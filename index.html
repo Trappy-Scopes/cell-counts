@@ -247,7 +247,45 @@
   
     
   
-  Growth curves
+  Cell counting experiments
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="metaexperiments/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Metaexperiments
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="legacy-data/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Legacy data
 
       </a>
     </li>
@@ -424,10 +462,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-here" class="md-nav__link">
+  <a href="#doubling-time-every-strain-we-have-a-fit-for" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is here
+        Doubling time, every strain we have a fit for
       
     </span>
   </a>
@@ -435,32 +473,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#growth-curves" class="md-nav__link">
+  <a href="#the-three-sources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Growth curves
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-an-experiment-gets-here" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How an experiment gets here
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#before-this-framework" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Before this framework
+        The three sources
       
     </span>
   </a>
@@ -489,7 +505,61 @@
   <span class="md-ellipsis">
     
   
-    Growth curves
+    Cell counting experiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metaexperiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metaexperiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="legacy-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy data
   
 
     
@@ -601,11 +671,26 @@
 
 
 <h1 id="cell-counts">cell-counts<a class="headerlink" href="#cell-counts" title="Permanent link">&para;</a></h1>
-<p>Cell density measurements for the Trappy-Scopes lab, and the growth-curve
-analysis built on top of them: dilution-compensated density, fitted growth
-rate, doubling time, and — for colonies that get media added repeatedly —
-segment-wise rates across each dilution.</p>
-<h2 id="what-is-here">What is here<a class="headerlink" href="#what-is-here" title="Permanent link">&para;</a></h2>
+<p>One place for every cell-density measurement in the lab — cultures logged by
+nutrient, date and mutant line, across however the count was actually taken:
+a dedicated growth-curve experiment, a day's Metaexperiment log, or an old
+hand-kept CSV. Four pages, one per source, plus this dashboard tying them
+together.</p>
+<h2 id="doubling-time-every-strain-we-have-a-fit-for">Doubling time, every strain we have a fit for<a class="headerlink" href="#doubling-time-every-strain-we-have-a-fit-for" title="Permanent link">&para;</a></h2>
+<iframe src="plots/home_growth_dashboard.html" width="100%" height="560" style="border:none;"
+        title="Doubling time by strain and colony"></iframe>
+
+<p>Current growth-curve experiments (blue) and legacy data (red), grouped by
+strain — this is the view to watch for growth-rate drift in a cell line
+over time. Metaexperiment logs aren't in it: those record one raw and one
+separator density reading per culture per day, not a timeseries a doubling
+time can be fit to, and carry no strain/mutant field to group by (see the
+<a href="metaexperiments/">Metaexperiments</a> page). Motility/swimming assays and
+minute-timescale protocol tests (centrifugation, resuspension) are excluded
+from every doubling-time number here for the same reason a stopwatch
+reading isn't a growth rate — see <a href="methodology/">Methodology</a> and
+<a href="legacy-data/">Legacy data</a> for what's excluded and why.</p>
+<h2 id="the-three-sources">The three sources<a class="headerlink" href="#the-three-sources" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -615,60 +700,22 @@ segment-wise rates across each dilution.</p>
 </thead>
 <tbody>
 <tr>
-<td>Experiments</td>
-<td>1</td>
+<td><a href="growth-curves/">Cell counting experiments</a></td>
+<td>The current framework: <code>cellcounting.py</code> logs counts and media additions through Trappy-Scopes' <code>Experiment.Construct</code>, and this site fits dilution-compensated growth curves from them automatically on every push.</td>
 </tr>
 <tr>
-<td>Colonies</td>
-<td>5</td>
+<td><a href="metaexperiments/">Metaexperiments</a></td>
+<td>Day-level logs shared across microscopes: a culture's raw density and, when the day includes a separation step, its density after separating. Real calendar dates from day one.</td>
 </tr>
 <tr>
-<td>Mutant</td>
-<td>CC2894</td>
-</tr>
-<tr>
-<td>Span</td>
-<td>2026-08-18 to 2026-08-21</td>
-</tr>
-<tr>
-<td>Growth rate</td>
-<td>0.070 – 0.072 / hr</td>
-</tr>
-<tr>
-<td>Doubling time</td>
-<td>9.6 – 10.0 hours</td>
+<td><a href="legacy-data/">Legacy data</a></td>
+<td>Hand-kept CSVs from before this framework existed, normalised here into one schema so they plot the same way as everything else.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="growth-curves">Growth curves<a class="headerlink" href="#growth-curves" title="Permanent link">&para;</a></h2>
-<p><img alt="Growth curves overview" src="plots/growth_curves_overview.png" /></p>
-<p>Every colony currently on record, dilution-compensated so that media
-additions read as continuations of the same exponential rather than sudden
-drops. <a href="growth-curves/">See the interactive version →</a></p>
-<h2 id="how-an-experiment-gets-here">How an experiment gets here<a class="headerlink" href="#how-an-experiment-gets-here" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Open an experiment with <code>create_exp(...)</code> (wraps <code>Experiment.Construct</code>).</li>
-<li>Log every count with <code>new_count(name, *counts, df=..., mutant=..., ...)</code>,
-   and every media addition with
-   <code>log_media_addition(name, volume_before_ml, media_added_ml, ...)</code>. Both
-   take a <code>date_override</code> / <code>time_override</code> for backfilling records after
-   the fact.</li>
-<li>Run <code>fit_curve()</code> and <code>analyse_growth()</code> — they populate the
-   experiment's <code>analysis/</code> folder with the CSVs and figures this site
-   reads.</li>
-<li>Copy (or leave) the experiment folder under <code>data/&lt;experiment-name&gt;/</code>,
-   commit, and push.</li>
-</ol>
-<p>Everything on this site regenerates itself from <code>data/</code> on every push —
-nothing above needs to be run again by hand. See <a href="data/">The data</a> for
-the repository layout and exactly what <code>tools/parse_data.py</code> and
-<code>tools/make_plots.py</code> do with it, and <a href="methodology/">Methodology</a> for
-what "dilution-compensated" and "growth rate" actually mean.</p>
-<h2 id="before-this-framework">Before this framework<a class="headerlink" href="#before-this-framework" title="Permanent link">&para;</a></h2>
-<p>Counts used to be entered into per-file CSV templates and processed by a
-fixed set of scripts. That pipeline — and the counts it recorded — is kept
-in <code>legacy/</code> (and the <code>legacy</code> branch) for reference; see
-<code>legacy/README.md</code>.</p>
+<p>See <a href="methodology/">Methodology</a> for what "dilution-compensated", "growth
+rate" and "doubling time" actually mean, and <a href="data/">The data</a> for a short
+note on where each source's numbers come from.</p>
 <hr />
 <p><em><code>cellcounting.py</code>, the analysis it runs, and this site were built by
 Claude, reviewed by Yatharth Bhasin.</em></p>

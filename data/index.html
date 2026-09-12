@@ -245,7 +245,45 @@
   
     
   
-  Growth curves
+  Cell counting experiments
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../metaexperiments/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Metaexperiments
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../legacy-data/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Legacy data
 
       </a>
     </li>
@@ -398,7 +436,61 @@
   <span class="md-ellipsis">
     
   
-    Growth curves
+    Cell counting experiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metaexperiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metaexperiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../legacy-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy data
   
 
     
@@ -454,24 +546,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The data
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -488,69 +562,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#repository-layout" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Repository layout
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generated-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generated files
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-the-site-is-built" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How the site is built
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-intentionally-not-tracked" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What is intentionally not tracked
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -601,68 +612,30 @@
 
 
 <h1 id="the-data">The data<a class="headerlink" href="#the-data" title="Permanent link">&para;</a></h1>
-<h2 id="repository-layout">Repository layout<a class="headerlink" href="#repository-layout" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>data/&lt;experiment-name&gt;/        one Trappy-Scopes experiment (Experiment.Construct)
-  .experiment                  short experiment id
-  experiment.yaml, logs.yaml,  framework bookkeeping
-    sessions.yaml
-  scripts/cellcounting.py      the exact script that ran this experiment
-  analysis/                    written by fit_curve() / analyse_growth():
-    cell_counts.csv              label, mutant, df, density, timestamp,
-                                  compensated_density, perturbed
-    media_additions.csv          label, volume_before_ml, media_added_ml,
-                                  dilution_fraction, timestamp
-    growth_summary.csv            one row per colony: fitted rate, doubling
-                                  time, R²
-    *.png                         per-colony and per-mutant figures
+<p>Everything on this site is rebuilt from <code>data/</code> and <code>legacy/data/</code> on every
+push — nothing here needs to be run again by hand.</p>
+<div class="highlight"><pre><span></span><code>data/&lt;experiment-name&gt;/        one cellcounting.py experiment (Experiment.Construct)
+data/metaexperiments/&lt;name&gt;/   a copied-in Metaexperiment experiment.yaml (see Metaexperiments)
+legacy/data/                   pre-framework CSVs (see Legacy data)
 
-tools/parse_data.py            aggregates every data/*/analysis/*.csv into
-tools/make_plots.py            build/all_*.csv, then builds plots/*.png and
-                                plots/interactive.html from those
-
-legacy/                         the pipeline this repo used before
-                                cellcounting.py — see legacy/README.md
+tools/parse_data.py            data/*/analysis/*.csv          -&gt; build/all_*.csv
+tools/parse_metaexperiments.py data/metaexperiments/*/         -&gt; build/all_metaexperiment_counts.csv
+tools/parse_legacy.py          legacy/data/**/*.csv            -&gt; build/all_legacy_counts.csv,
+                                                                   all_legacy_growth_summary.csv
+tools/make_plots.py, make_metaexperiment_plots.py,
+tools/make_legacy_plots.py, make_home_dashboard.py
+                                -&gt; plots/*.png, plots/*.html
 </code></pre></div>
-<h2 id="generated-files">Generated files<a class="headerlink" href="#generated-files" title="Permanent link">&para;</a></h2>
-<p><code>build/</code> and <code>plots/interactive.html</code> are rebuilt from <code>data/</code> on every
-push and are not tracked — see <strong>How the site is built</strong>, below.
-<code>plots/*.png</code> (the two overview figures) <em>are</em> tracked, so they render
-inline in the README and on this page even for someone browsing the repo
-directly on GitHub rather than the published site; refresh them locally
-(<code>python tools/parse_data.py &amp;&amp; python tools/make_plots.py</code>) and commit
-when you want that snapshot current. The live site at
-<a href="https://trappy-scopes.github.io/cell-counts">trappy-scopes.github.io/cell-counts</a>
-is always fresh regardless, since it is rebuilt in CI on every push.</p>
-<p>Each experiment's own <code>analysis/*.csv</code> and <code>*.png</code> <strong>are</strong> tracked — they
-are cellcounting.py's primary output for that experiment, not a build
-artifact of this site.</p>
-<h2 id="how-the-site-is-built">How the site is built<a class="headerlink" href="#how-the-site-is-built" title="Permanent link">&para;</a></h2>
-<p><code>.github/workflows/pages.yml</code>, on every push touching <code>data/</code>, <code>tools/</code> or
-<code>docs/</code>:</p>
-<ol>
-<li><code>tools/parse_data.py</code> — walks <code>data/*/analysis/</code>, writes
-   <code>build/all_cell_counts.csv</code>, <code>build/all_media_additions.csv</code>,
-   <code>build/all_growth_summary.csv</code></li>
-<li><code>tools/make_plots.py</code> — writes <code>growth_curves_overview.png</code>,
-   <code>doubling_time_summary.png</code> and <code>interactive.html</code> into <code>plots/</code></li>
-<li>copies <code>plots/</code> and every experiment's <code>analysis/*.png</code> into <code>docs/plots/</code></li>
-<li><code>mkdocs gh-deploy</code> — publishes to the <code>gh-pages</code> branch</li>
-</ol>
-<p>Nothing is committed back to <code>main</code>, so pushing here never conflicts with
-a build — a person's next push never has to rebase over a bot commit.
-The aggregated CSVs are also uploaded as a workflow artifact (<code>parsed-data</code>,
-90-day retention) so the numbers behind the site are downloadable without
-cloning.</p>
-<h2 id="what-is-intentionally-not-tracked">What is intentionally not tracked<a class="headerlink" href="#what-is-intentionally-not-tracked" title="Permanent link">&para;</a></h2>
-<p><code>legacy/data/raw_exports/coimbra.csv</code>, <code>october24.csv</code> and <code>september24.csv</code>
-are ~33 MB instrument dumps predating this framework. They are excluded via
-<code>.gitignore</code> rather than committed — GitHub's per-file limit is 100 MB, and
-a repo this size would make every clone noticeably slower for no benefit to
-the current pipeline. If they need to be versioned, use Git LFS or attach
-them as a release asset. See <code>legacy/README.md</code>.</p>
-<p><code>data/&lt;experiment&gt;/expstate.pickle</code> (framework runtime state) is also
-excluded, via a blanket <code>*.pickle</code> rule — it isn't needed to reproduce
-anything on this site and pickles are best not carried in git regardless.</p>
+<p><code>build/</code> and everything under <code>plots/</code> are gitignored and rebuilt by
+<a href="https://github.com/Trappy-Scopes/cell-counts/blob/main/.github/workflows/pages.yml"><code>.github/workflows/pages.yml</code></a>
+on every push touching <code>data/</code>, <code>legacy/data/</code>, <code>tools/</code>, <code>docs/</code> or
+<code>mkdocs.yml</code>; the aggregated CSVs are also uploaded as a 90-day workflow
+artifact. Each experiment's own <code>analysis/*.csv</code> and <code>*.png</code>, under
+<code>data/&lt;experiment&gt;/</code>, <strong>are</strong> tracked — they're <code>cellcounting.py</code>'s primary
+output, not a build artifact of this site.</p>
+<p>See <a href="../metaexperiments/#where-this-data-comes-from-for-now">Metaexperiments</a>
+and <a href="../legacy-data/#whats-excluded-and-why">Legacy data</a> for what those two
+sources' parsers do and don't cover.</p>
 
 
 

@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://trappy-scopes.github.io/cell-counts/methodology/">
+        <link rel="canonical" href="https://trappy-scopes.github.io/cell-counts/legacy-data/">
       
       
-        <link rel="prev" href="../legacy-data/">
+        <link rel="prev" href="../metaexperiments/">
       
       
-        <link rel="next" href="../data/">
+        <link rel="next" href="../methodology/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Methodology - Trappy-Scopes/cell-counts</title>
+        <title>Legacy data - Trappy-Scopes/cell-counts</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#methodology" class="md-skip">
+        <a href="#legacy-data" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Methodology
+              Legacy data
             
           </span>
         </div>
@@ -277,9 +277,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../legacy-data/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -296,11 +298,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../methodology/" class="md-tabs__link">
         
   
   
@@ -482,33 +482,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../legacy-data/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Legacy data
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -528,7 +501,7 @@
   <span class="md-ellipsis">
     
   
-    Methodology
+    Legacy data
   
 
     
@@ -546,7 +519,7 @@
   <span class="md-ellipsis">
     
   
-    Methodology
+    Legacy data
   
 
     
@@ -572,10 +545,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dilution-compensation" class="md-nav__link">
+  <a href="#whats-excluded-and-why" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dilution compensation
+        What's excluded, and why
       
     </span>
   </a>
@@ -583,21 +556,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fitting-the-growth-rate" class="md-nav__link">
+  <a href="#density-formula" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fitting the growth rate
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#continuously-diluted-cultures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Continuously diluted cultures
+        Density formula
       
     </span>
   </a>
@@ -608,6 +570,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methodology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Methodology
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -683,62 +672,45 @@
 
 
 
-<h1 id="methodology">Methodology<a class="headerlink" href="#methodology" title="Permanent link">&para;</a></h1>
-<h2 id="dilution-compensation">Dilution compensation<a class="headerlink" href="#dilution-compensation" title="Permanent link">&para;</a></h2>
-<p>Cells are counted from a fixed-volume sample, so the raw <code>density</code> column
-is only meaningful until media gets added — after that, the same number of
-cells is spread through more liquid and density drops for a reason that has
-nothing to do with growth.</p>
-<p>Each media addition is logged separately (<code>log_media_addition</code>) as a
-volume-before and a volume-added, not a growth measurement. From those two
-numbers:</p>
-<div class="highlight"><pre><span></span><code>dilution_fraction = media_added_ml / (volume_before_ml + media_added_ml)
-fold_factor        = 1 / (1 - dilution_fraction)
+<h1 id="legacy-data">Legacy data<a class="headerlink" href="#legacy-data" title="Permanent link">&para;</a></h1>
+<p>Counts kept by hand in per-file CSVs before this repo adopted the
+Trappy-Scopes framework — heterogeneous in format, normalised here into one
+schema (<code>tools/parse_legacy.py</code>) so they plot the same way as everything
+else. See <code>legacy/README.md</code> for the original pipeline these came from.</p>
+<iframe src="../plots/legacy.html" width="100%" height="620" style="border:none;"
+        title="Legacy data explorer"></iframe>
+
+<p><a class="md-button" href="../plots/legacy.html">Open full screen →</a></p>
+<h2 id="whats-excluded-and-why">What's excluded, and why<a class="headerlink" href="#whats-excluded-and-why" title="Permanent link">&para;</a></h2>
+<p><strong>Motility/swimming assays</strong> — a handful of legacy files record the
+fraction of cells swimming (<code>*_swimmers</code> / <code>*_total</code> columns), not density.
+That's a different measurement entirely; this page and the doubling-time
+dashboard on the <a href="../">home page</a> never read those columns, so those
+files simply contribute nothing rather than being force-fit into a density
+plot.</p>
+<p><strong>Minute-timescale protocol tests</strong> — <code>centrifugation_10pow4_RepAB_Controls.csv</code>
+records density before/after centrifugation and a wait under a light
+source, over about an hour — a real, useful measurement, but not a growth
+curve, so it's excluded from the doubling-time dashboard specifically
+(fitting exponential growth to 60 minutes of data produces a number, just
+not a biologically meaningful one). It's still plotted above.</p>
+<p><strong>Placeholder rows</strong> — a few early rows in <code>TheEight.csv</code> are marked "Faux
+Count" with all-zero counts, from before that assay actually started.
+Dropped everywhere.</p>
+<p><strong>Three large instrument exports</strong> (<code>raw_exports/coimbra.csv</code>, <code>october24.csv</code>,
+<code>september24.csv</code>, ~33 MB each) aren't tracked in git at all (see
+<code>.gitignore</code>) and use a third, incompatible column schema besides — they're
+out of scope for this parser for now.</p>
+<h2 id="density-formula">Density formula<a class="headerlink" href="#density-formula" title="Permanent link">&para;</a></h2>
+<p>This site reproduces the original pipeline's (<code>legacy/script/analysis.py</code>)
+<code>normalize_cells_per_ml()</code> exactly, so these numbers match whatever it would
+have reported for the same files:</p>
+<div class="highlight"><pre><span></span><code>avg_count = mean(count1..4)
+count_norm = avg_count × (v_sample_ul + v_etoh_ul) / v_sample_ul
+density    = count_norm / 0.00040
 </code></pre></div>
-<p><code>fold_factor</code> is how much the density of an unchanged population would
-appear to drop from this one addition. To compensate a given count, every
-<code>fold_factor</code> for media added <em>before</em> that count's timestamp is multiplied
-onto the raw density:</p>
-<div class="highlight"><pre><span></span><code>compensated_density = raw_density × Π(fold_factor for every prior addition)
-</code></pre></div>
-<p>The result is what the density <em>would have read</em> if no media had ever been
-added — a single continuous trace suitable for one exponential fit, which
-is the <code>compensated_density</code> column in <code>cell_counts.csv</code> and what every
-plot on this site actually shows.</p>
-<h2 id="fitting-the-growth-rate">Fitting the growth rate<a class="headerlink" href="#fitting-the-growth-rate" title="Permanent link">&para;</a></h2>
-<p>Exponential growth means <code>dN/dt = μN</code>, which integrates to
-<code>N(t) = N₀·e^(μt)</code> — so <code>ln(N(t))</code> is linear in <code>t</code> with slope <code>μ</code>. Fitting
-is therefore an ordinary least-squares line through
-<code>ln(compensated_density)</code> vs. elapsed hours (<code>np.polyfit</code>); the slope is
-<code>growth_rate_per_hr</code>, and <code>r_squared</code> says how well the data actually held
-to that constant-rate assumption.</p>
-<p>Two figures follow directly from <code>μ</code>:</p>
-<ul>
-<li><strong>doubling time</strong> <code>= ln(2) / μ</code> — hours for the population to double.</li>
-<li><strong>growth rate per 24 h</strong> <code>= μ × 24</code> — the same rate constant on a
-  different clock, valid because it is a rescaling of the exponent, not a
-  linear conversion of a fold-change (<code>N(t+24)/N(t) = e^(24μ)</code> either way).</li>
-</ul>
-<h2 id="continuously-diluted-cultures">Continuously diluted cultures<a class="headerlink" href="#continuously-diluted-cultures" title="Permanent link">&para;</a></h2>
-<p>Some colonies get media added repeatedly rather than once — Gptx above,
-diluted on all three retrieval days. Fitting <em>one</em> slope across the whole
-compensated trace still works, but it hides whether the rate held steady
-from one dilution to the next or drifted.</p>
-<p>The direct fix does not need new bookkeeping: because
-<code>compensated_density</code> is already reconstructed as one continuous trace,
-the ratio between two <em>consecutive</em> readings —
-<code>compensated[i+1] / compensated[i]</code> — is already the locally
-dilution-corrected growth ratio for exactly that interval (every earlier
-cumulative fold-factor cancels out of the ratio). So the segment-wise rate
-between reading <code>i</code> and <code>i+1</code> is just:</p>
-<div class="highlight"><pre><span></span><code>segment_rate = ln(compensated[i+1] / compensated[i]) / Δt_hours
-</code></pre></div>
-<p>computed once per consecutive pair, with no re-derivation of fold factors
-needed. <code>growth_rate_segments()</code> and <code>plot_growth_rate_segments()</code> do
-exactly this, and run automatically for any colony with two or more media
-additions — each experiment's <code>analysis/</code> folder has the resulting
-<code>&lt;colony&gt;_segment_growth_rate.png</code> for any colony it applies to (see
-<a href="../growth-curves/">Cell counting experiments</a>).</p>
+<p><code>inv_dil</code> is carried through in <code>build/all_legacy_counts.csv</code> as its own
+column, unchanged from the source file, but is not part of this formula.</p>
 
 
 
