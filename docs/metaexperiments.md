@@ -58,6 +58,21 @@ One more thing worth knowing about the export as it stands: the label
 `B-B raw` is reused across two unrelated early experiments
 (2025-02-19 and 2025-02-20) rather than naming one culture.
 
+`sep` (raw vs. separator density) is not a clean boolean in the source
+data — reviewed and normalized as follows:
+
+- Every reading before the `-31May26` culture cohort (39 rows, 2025-02-18
+  through 2026-04-09 — the entire archive prior to that point) has no
+  `sep` value logged at all; the field wasn't in use yet. These are
+  treated as raw (`sep = False`), on review.
+- From the first `-31May26` reading (2026-06-22) on, `sep` is logged
+  properly — as the literal strings `"raw"`/`"sep"` on that first day,
+  then as a real boolean from the next day forward, with two later
+  one-off exceptions: a `dillution` string (2026-08-25, `Gptx9-4Aug26`,
+  mapped to `sep = True` as a post-dilution/separator-equivalent reading)
+  and one more unlogged reading (2026-07-03, `Bptx13-31May26`, likewise
+  treated as raw).
+
 Refreshing this export means re-running the same scan against the
 `~/experiments/` archive and replacing
 `data/metaexperiments/all_cell_counts.csv`; `tools/parse_metaexperiments.py`

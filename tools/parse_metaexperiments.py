@@ -41,6 +41,17 @@ is still normally kept; one is only dropped when it's a duplicate reading
 for the same label superseded by a later one that did compute a density
 (see docs/metaexperiments.md for the one case this applied to).
 
+`sep` is not a clean boolean in the raw source - it also shows up as the
+literal strings "raw"/"sep"/"dillution", or missing entirely on every
+reading before the `-31May26` culture cohort (nothing recorded, not
+False). Naively doing `.astype(bool)` on that raw column silently mis-reads
+it (every non-empty string, and NaN, becomes True; only bare None becomes
+False) - so that normalization has to happen once, at export time, before
+it lands in `all_cell_counts.csv` (see docs/metaexperiments.md for exactly
+how each case was resolved). By the time this script reads the export,
+`sep` is already a clean bool and `.astype(bool)` below is just a dtype
+guarantee, not a conversion.
+
 Output (repo root, gitignored, rebuilt on every run):
     build/all_metaexperiment_counts.csv
         source_experiment, eid, label, dt, sep, density, df
