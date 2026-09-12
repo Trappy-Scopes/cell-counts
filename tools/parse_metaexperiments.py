@@ -16,7 +16,7 @@ logging framework, so nothing here is recomputed from raw counts.
 
 Unlike the interim version of this script, this does not parse
 `experiment.yaml` directly (and does not need `explorer.legacy.ExpExplorer`
-or `trappy-explorer` at all): the source Metaexperiment folders live on the
+or `trappy-explorer` at all): the source Metaexperiments live on the
 instrument machine under the lab's `~/experiments/` archive, which is kept
 strictly read-only and is not copied into this repo. Instead,
 `data/metaexperiments/all_cell_counts.csv` is a periodic bulk export of that
@@ -26,20 +26,24 @@ script just validates and re-sorts that export into the same build/ contract
 the rest of the pipeline expects.
 
 If a fresher export needs the same read: every day-level Metaexperiment
-folder whose name contains "metaexperiment" is loaded via
+whose folder name contains "metaexperiment" is loaded via
 `explorer.legacy.ExpExplorer(dirs, extended_parse=True)`, and its
 `cell_counts` rows are joined to their stream name via `measureid` alone -
 `df_events` and `df` do not always agree on a log's own `eid` for the same
-experiment, but `measureid` is unique across the whole corpus. A folder
-whose name matches but that turns out to carry no `cell_counts` stream at
-all (an `MDev_*` per-scope run log can still contain the word
+experiment, but `measureid` is unique across the whole corpus. An experiment
+whose folder name matches but that turns out to carry no `cell_counts`
+stream at all (an `MDev_*` per-scope run log can still contain the word
 "metaexperiment" in its own descriptive title) contributes nothing and is
 not an error. `experiment.yaml` files that are zero bytes fail to parse
-entirely and must be skipped, not silently retried.
+entirely and must be skipped, not silently retried. A `cell_counts` row
+whose `success` field is `None` (unconfirmed - almost none of them set it)
+is still normally kept; one is only dropped when it's a duplicate reading
+for the same label superseded by a later one that did compute a density
+(see docs/metaexperiments.md for the one case this applied to).
 
 Output (repo root, gitignored, rebuilt on every run):
     build/all_metaexperiment_counts.csv
-        source_folder, eid, label, dt, sep, density, df
+        source_experiment, eid, label, dt, sep, density, df
 """
 
 import os
@@ -48,7 +52,7 @@ import pandas as pd
 
 DATA_PATH = os.path.join("data", "metaexperiments", "all_cell_counts.csv")
 BUILD_DIR = "build"
-COLUMNS = ["source_folder", "eid", "label", "dt", "sep", "density", "df"]
+COLUMNS = ["source_experiment", "eid", "label", "dt", "sep", "density", "df"]
 
 
 def main():
@@ -77,9 +81,9 @@ def main():
     out.to_csv(out_path, index=False)
 
     n_labels = out["label"].nunique()
-    n_exps = out["source_folder"].nunique()
+    n_exps = out["source_experiment"].nunique()
     print(f"wrote {out_path} ({len(out)} rows, {n_labels} culture label(s), "
-          f"{n_exps} Metaexperiment folder(s))")
+          f"{n_exps} Metaexperiment(s))")
 
 
 if __name__ == "__main__":

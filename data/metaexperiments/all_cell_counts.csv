@@ -1,4 +1,4 @@
-source_folder,eid,label,dt,sep,density,df
+source_experiment,eid,label,dt,sep,density,df
 Metaexperiment_2025_02_18_9hh_11mm_cell_trapping_faad866cd0,faad866cd0,D-A raw,2025-02-18 09:11:56.880131,True,32000.0,2.0
 Metaexperiment_2025_02_19_9hh_1mm_cell_trapping_0e5a886132,0e5a886132,B-B raw,2025-02-19 09:01:58.459862,True,245000.0,2.0
 Metaexperiment_2025_02_20_9hh_10mm_cell_trapping_373a669541,373a669541,B-B raw,2025-02-20 09:10:08.984298,True,95000.0,2.0
@@ -20,7 +20,6 @@ Metaexperiment_2025_12_22_8hh_57mm_cell_trapping_14e56f98d0,14e56f98d0,MC9-18Nov
 Metaexperiment_2025_12_30_9hh_9mm_cell_trapping_9062ae794b,9062ae794b,Bx5-2Dec25,2025-12-30 13:23:08.908398,True,5970000.0,3.0
 Metaexperiment_2026_01_02_10hh_10mm_cell_trapping_ad4b171558,ad4b171558,Cx2-16Dec25,2026-01-02 12:31:18.678275,True,365000.0,4.0
 Metaexperiment_2026_02_10_9hh_22mm_cell_trapping_5cedce35ee,5cedce35ee,Cx4-16Jan26,2026-02-10 10:34:56.039787,True,840000.0,2.0
-Metaexperiment_2026_04_07_13hh_49mm_cell_trapping_5feb7ad15c,5feb7ad15c,A3-24April26,2026-04-07 17:17:47.665355,True,,2.0
 Metaexperiment_2026_04_07_13hh_49mm_cell_trapping_5feb7ad15c,5feb7ad15c,A3-24April26,2026-04-07 17:18:07.127172,True,388000.0,2.0
 Metaexperiment_2026_04_07_13hh_49mm_cell_trapping_5feb7ad15c,5feb7ad15c,B3-24April26,2026-04-07 17:18:51.267078,True,448000.0,2.0
 Metaexperiment_2026_04_07_13hh_49mm_cell_trapping_5feb7ad15c,5feb7ad15c,B3-24April26-LS-15x,2026-04-07 17:20:18.479590,True,80000.0,2.0

@@ -15,12 +15,12 @@ when a separation step was run that day, a separator-density point (after
 separation), joined by a thin line so the drop from raw to separator
 density reads at a glance.
 
-This now covers the real Metaexperiment archive (dozens of folders, tens of
+This now covers the real Metaexperiment archive (dozens of experiments, tens of
 distinct culture labels) rather than the two hand-picked examples the
 interim version plotted. Most labels appear on exactly one day; a Bokeh
 legend with 60+ entries is unreadable, so there is no default legend at
 all - instead a search-as-you-type MultiChoice box lets you isolate one or
-more cultures by label, and hover always shows which label/day/folder a
+more cultures by label, and hover always shows which label/day/experiment a
 point belongs to regardless of the filter.
 """
 
@@ -86,32 +86,32 @@ def main():
         src_all = ColumnDataSource(dict(
             x=g["dt"], y=g["density"], label=[label] * len(g),
             kind=["separator" if s else "raw" for s in g["sep"]],
-            df=g["df"], ts=g["dt"].astype(str), source_folder=g["source_folder"],
+            df=g["df"], ts=g["dt"].astype(str), source_experiment=g["source_experiment"],
         ))
         line = p.line("x", "y", source=src_all, color=colour, line_width=1.2,
                        line_dash="dotted")
 
         src_raw = ColumnDataSource(dict(
             x=raw["dt"], y=raw["density"], label=[label] * len(raw),
-            df=raw["df"], ts=raw["dt"].astype(str), source_folder=raw["source_folder"],
+            df=raw["df"], ts=raw["dt"].astype(str), source_experiment=raw["source_experiment"],
         ))
         r_raw = p.scatter("x", "y", source=src_raw, size=9, color=colour,
                            marker="circle")
 
         src_sep = ColumnDataSource(dict(
             x=sep["dt"], y=sep["density"], label=[label] * len(sep),
-            df=sep["df"], ts=sep["dt"].astype(str), source_folder=sep["source_folder"],
+            df=sep["df"], ts=sep["dt"].astype(str), source_experiment=sep["source_experiment"],
         ))
         r_sep = p.scatter("x", "y", source=src_sep, size=9, color=colour,
                            marker="square", fill_alpha=0.3)
 
         p.add_tools(HoverTool(renderers=[r_raw], tooltips=[
             ("culture", "@label"), ("day", "@ts"), ("raw density", "@y{%.2e}"),
-            ("count dilution (df)", "@df"), ("folder", "@source_folder"),
+            ("count dilution (df)", "@df"), ("experiment", "@source_experiment"),
         ], formatters={"@y": "printf"}))
         p.add_tools(HoverTool(renderers=[r_sep], tooltips=[
             ("culture", "@label"), ("day", "@ts"), ("separator density", "@y{%.2e}"),
-            ("count dilution (df)", "@df"), ("folder", "@source_folder"),
+            ("count dilution (df)", "@df"), ("experiment", "@source_experiment"),
         ], formatters={"@y": "printf"}))
 
         for r in (line, r_raw, r_sep):
@@ -128,7 +128,7 @@ def main():
         placeholder="start typing a culture label…",
     )
     note = Div(text=(
-        f"<i>{len(labels)} culture label(s) across {df['source_folder'].nunique()} "
+        f"<i>{len(labels)} culture label(s) across {df['source_experiment'].nunique()} "
         "Metaexperiment day(s). Most labels appear on a single day (one raw + "
         "one separator point); a few span more than one day.</i>"
     ))
