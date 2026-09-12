@@ -556,6 +556,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mutant-media-condition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutant, media, condition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#density-formula" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -676,24 +687,31 @@
 <p>Counts kept by hand in per-file CSVs before this repo adopted the
 Trappy-Scopes framework — heterogeneous in format, normalised here into one
 schema (<code>tools/parse_legacy.py</code>) so they plot the same way as everything
-else. See <code>legacy/README.md</code> for the original pipeline these came from.</p>
+else. This page is pure growth curves only — see <code>legacy/README.md</code> for
+the original pipeline these came from, and below for what that excludes.</p>
 <iframe src="../plots/legacy.html" width="100%" height="620" style="border:none;"
         title="Legacy data explorer"></iframe>
 
 <p><a class="md-button" href="../plots/legacy.html">Open full screen →</a></p>
 <h2 id="whats-excluded-and-why">What's excluded, and why<a class="headerlink" href="#whats-excluded-and-why" title="Permanent link">&para;</a></h2>
 <p><strong>Motility/swimming assays</strong> — a handful of legacy files record the
-fraction of cells swimming (<code>*_swimmers</code> / <code>*_total</code> columns), not density.
-That's a different measurement entirely; this page and the doubling-time
-dashboard on the <a href="../">home page</a> never read those columns, so those
-files simply contribute nothing rather than being force-fit into a density
-plot.</p>
-<p><strong>Minute-timescale protocol tests</strong> — <code>centrifugation_10pow4_RepAB_Controls.csv</code>
-records density before/after centrifugation and a wait under a light
-source, over about an hour — a real, useful measurement, but not a growth
-curve, so it's excluded from the doubling-time dashboard specifically
-(fitting exponential growth to 60 minutes of data produces a number, just
-not a biologically meaningful one). It's still plotted above.</p>
+fraction of cells swimming (<code>*_swimmers</code> / <code>*_total</code> columns), not density
+— <code>10pow4exp1.csv</code>, <code>10pow4exp2.csv</code>,
+<code>resuspension_deflaggalation_assay_exp1.csv</code>. That's a different
+measurement entirely; this parser only ever reads density columns and
+never looks at the swimming ones, so these files simply have none of the
+columns it needs and are skipped rather than force-fit into a density plot.</p>
+<p><strong>Centrifugation and counting-protocol runs</strong> — per Yatharth, this page is
+pure growth curves only, so a few files that do have the right density
+columns are excluded outright rather than merely kept-but-not-fit:
+<code>raw_exports/centrifugation_10pow4_RepAB_Controls.csv</code> (a ~1-hour
+centrifugation/recovery protocol test, not a growth curve) and
+<code>ProtocolGrowthCurve_Exp1_F13Xseries.csv</code> plus the small <code>raw_exports/YB_*.csv</code>
+files (counting-protocol development runs — testing the counting method
+itself, e.g. ethanol-fixation volume, not a strain/mutant comparison). See
+<code>EXCLUDED_FILES</code> in <code>tools/parse_legacy.py</code> for the exact list and reasons.
+That leaves <code>TheEight.csv</code> as the only legacy growth curve in this corpus:
+four genotypes (CC125, MBO2, ODA1, TPG1) tracked over about 11 days.</p>
 <p><strong>Placeholder rows</strong> — a few early rows in <code>TheEight.csv</code> are marked "Faux
 Count" with all-zero counts, from before that assay actually started.
 Dropped everywhere.</p>
@@ -701,6 +719,14 @@ Dropped everywhere.</p>
 <code>september24.csv</code>, ~33 MB each) aren't tracked in git at all (see
 <code>.gitignore</code>) and use a third, incompatible column schema besides — they're
 out of scope for this parser for now.</p>
+<h2 id="mutant-media-condition">Mutant, media, condition<a class="headerlink" href="#mutant-media-condition" title="Permanent link">&para;</a></h2>
+<p>A growth curve here is defined by which mutant/strain it is (the <code>strain</code>
+column), which media it was grown in, and optionally some other condition
+(a perturbation like lights off — reserved for the future; nothing in this
+corpus sets it yet). None of the surviving files record media explicitly,
+so every row defaults to <code>media = "TAP"</code>, per Yatharth's "assume TAP
+wherever not mentioned" rule, unless a future file adds its own <code>media</code>
+column.</p>
 <h2 id="density-formula">Density formula<a class="headerlink" href="#density-formula" title="Permanent link">&para;</a></h2>
 <p>This site reproduces the original pipeline's (<code>legacy/script/analysis.py</code>)
 <code>normalize_cells_per_ml()</code> exactly, so these numbers match whatever it would
@@ -709,8 +735,13 @@ have reported for the same files:</p>
 count_norm = avg_count × (v_sample_ul + v_etoh_ul) / v_sample_ul
 density    = count_norm / 0.00040
 </code></pre></div>
-<p><code>inv_dil</code> is carried through in <code>build/all_legacy_counts.csv</code> as its own
-column, unchanged from the source file, but is not part of this formula.</p>
+<p><code>inv_dil</code> (the dilution a sample was prepared at before counting, recorded
+as its reciprocal — 1000 means diluted 1:1000) is a real column in the
+source files, but was never part of this formula: it appears once in
+<code>legacy/script/analysis.py</code> as a documented dataclass field and is never
+read again anywhere in that pipeline. It's dropped from
+<code>build/all_legacy_counts.csv</code> entirely rather than carried through unused —
+it's only read internally, as a signal for detecting placeholder rows.</p>
 
 
 

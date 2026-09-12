@@ -615,7 +615,7 @@
 <p>Everything on this site is rebuilt from <code>data/</code> and <code>legacy/data/</code> on every
 push — nothing here needs to be run again by hand.</p>
 <div class="highlight"><pre><span></span><code>data/&lt;experiment-name&gt;/        one cellcounting.py experiment (Experiment.Construct)
-data/metaexperiments/&lt;name&gt;/   a copied-in Metaexperiment experiment.yaml (see Metaexperiments)
+data/metaexperiments/          all_cell_counts.csv, a bulk export from ~/experiments (see Metaexperiments)
 legacy/data/                   pre-framework CSVs (see Legacy data)
 
 tools/parse_data.py            data/*/analysis/*.csv          -&gt; build/all_*.csv
@@ -633,7 +633,7 @@ on every push touching <code>data/</code>, <code>legacy/data/</code>, <code>tool
 artifact. Each experiment's own <code>analysis/*.csv</code> and <code>*.png</code>, under
 <code>data/&lt;experiment&gt;/</code>, <strong>are</strong> tracked — they're <code>cellcounting.py</code>'s primary
 output, not a build artifact of this site.</p>
-<p>See <a href="../metaexperiments/#where-this-data-comes-from-for-now">Metaexperiments</a>
+<p>See <a href="../metaexperiments/#where-this-data-comes-from">Metaexperiments</a>
 and <a href="../legacy-data/#whats-excluded-and-why">Legacy data</a> for what those two
 sources' parsers do and don't cover.</p>
 

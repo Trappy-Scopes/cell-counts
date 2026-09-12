@@ -462,10 +462,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#doubling-time-every-strain-we-have-a-fit-for" class="md-nav__link">
+  <a href="#growth-every-strain-we-have-data-for" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Doubling time, every strain we have a fit for
+        Growth, every strain we have data for
       
     </span>
   </a>
@@ -676,20 +676,30 @@ nutrient, date and mutant line, across however the count was actually taken:
 a dedicated growth-curve experiment, a day's Metaexperiment log, or an old
 hand-kept CSV. Four pages, one per source, plus this dashboard tying them
 together.</p>
-<h2 id="doubling-time-every-strain-we-have-a-fit-for">Doubling time, every strain we have a fit for<a class="headerlink" href="#doubling-time-every-strain-we-have-a-fit-for" title="Permanent link">&para;</a></h2>
-<iframe src="plots/home_growth_dashboard.html" width="100%" height="560" style="border:none;"
-        title="Doubling time by strain and colony"></iframe>
+<h2 id="growth-every-strain-we-have-data-for">Growth, every strain we have data for<a class="headerlink" href="#growth-every-strain-we-have-data-for" title="Permanent link">&para;</a></h2>
+<iframe src="plots/home_growth_dashboard.html" width="100%" height="1160" style="border:none;"
+        title="Doubling time and growth curves, by strain"></iframe>
 
-<p>Current growth-curve experiments (blue) and legacy data (red), grouped by
-strain — this is the view to watch for growth-rate drift in a cell line
-over time. Metaexperiment logs aren't in it: those record one raw and one
+<p>Two charts. <strong>Doubling time by strain and colony</strong> — current growth-curve
+experiments (blue) and legacy data (red), grouped by strain — is the view
+to watch for growth-rate drift in a cell line over time. <strong>Growth curves
+over real calendar time</strong> plots every colony's own density readings
+against real date/time (not elapsed hours — different experiments start on
+different dates, so this view only makes sense on a shared calendar axis),
+filterable by <strong>mutant</strong> and by <strong>media</strong>. Current-framework data has no
+recorded media field yet, so it's shown as <code>TAP</code> by default (per the "TAP
+unless stated otherwise" convention — see <a href="legacy-data/">Legacy data</a>).
+Lab-wide events (an incubator change, a light-intensity change, and so on)
+will show up on this chart as vertical dashed lines once their dates are
+recorded — none are configured yet.</p>
+<p>Metaexperiment logs aren't in either chart: those record one raw and one
 separator density reading per culture per day, not a timeseries a doubling
-time can be fit to, and carry no strain/mutant field to group by (see the
-<a href="metaexperiments/">Metaexperiments</a> page). Motility/swimming assays and
-minute-timescale protocol tests (centrifugation, resuspension) are excluded
-from every doubling-time number here for the same reason a stopwatch
-reading isn't a growth rate — see <a href="methodology/">Methodology</a> and
-<a href="legacy-data/">Legacy data</a> for what's excluded and why.</p>
+time (or a growth curve) can be fit to, and carry no strain/mutant field to
+group by (see the <a href="metaexperiments/">Metaexperiments</a> page). Motility/
+swimming assays, minute-timescale protocol tests (centrifugation,
+resuspension), and counting-protocol development runs are excluded from
+both charts entirely — see <a href="legacy-data/">Legacy data</a> for the full list
+and why.</p>
 <h2 id="the-three-sources">The three sources<a class="headerlink" href="#the-three-sources" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
