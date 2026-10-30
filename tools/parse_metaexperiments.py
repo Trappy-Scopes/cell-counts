@@ -52,9 +52,31 @@ how each case was resolved). By the time this script reads the export,
 `sep` is already a clean bool and `.astype(bool)` below is just a dtype
 guarantee, not a conversion.
 
+scaled_density, sample_media_ratio
+------------------------------------
+Two Metaexperiments merged in on 2026-09-22 (`675c564a1e`, 2026-09-14, and
+`5b5ab9af8a`, 2026-09-21) are the first in this corpus whose raw
+`cell_counts` export carries two fields no earlier reading has:
+`scaled_density` and `sample_media_ratio`. Neither is defined anywhere in
+the copies of `trappy-explorer`, `cellcounter`, or `cellcounting.py`
+available when this was written, and both source files' framework code was
+touched right around 2026-09-21 - so this looks like a genuinely new,
+very recent field, not a parsing gap on this script's end. What's known
+empirically: `sample_media_ratio` is blank on every reading seen so far;
+`scaled_density` equals `density` exactly for both experiments' raw
+(`sep = False`) reading, and is exactly 10x `density` for both experiments'
+separator (`sep = True`) reading. Per Yatharth, both densities should be
+shown rather than the pipeline picking one - see
+tools/make_metaexperiment_plots.py for how. Every reading from before
+2026-09-14 has no `scaled_density`/`sample_media_ratio` at all (the
+framework didn't compute them yet), so those columns are simply blank
+(NaN) on all 99 pre-existing rows in `all_cell_counts.csv` - not an
+assumption that no correction applied, just genuinely not recorded.
+
 Output (repo root, gitignored, rebuilt on every run):
     build/all_metaexperiment_counts.csv
-        source_experiment, eid, label, dt, sep, density, df
+        source_experiment, eid, label, dt, sep, density, df,
+        scaled_density, sample_media_ratio
 """
 
 import os
@@ -63,7 +85,18 @@ import pandas as pd
 
 DATA_PATH = os.path.join("data", "metaexperiments", "all_cell_counts.csv")
 BUILD_DIR = "build"
-COLUMNS = ["source_experiment", "eid", "label", "dt", "sep", "density", "df"]
+COLUMNS = ["source_experiment", "eid", "label", "dt", "sep", "density", "df",
+           "scaled_density", "sample_media_ratio"]
+
+
+def _ratio_text(value):
+    """'(2, 18)' / '[2, 18]' / (2, 18) -> '2:18'; a bare number -> as is; blank -> NaN."""
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return float("nan")
+    text = str(value).strip().strip("()[]")
+    if not text:
+        return float("nan")
+    return ":".join(part.strip() for part in text.split(",")) if "," in text else text
 
 
 def main():
@@ -87,14 +120,23 @@ def main():
     df["dt"] = pd.to_datetime(df["dt"])
     df["sep"] = df["sep"].astype(bool)
     df["label"] = df["label"].astype(str)
+    # blank/NaN on every pre-2026-09-14 row - the framework didn't compute
+    # these yet (see "scaled_density, sample_media_ratio" above), not a
+    # conversion of anything already present.
+    df["scaled_density"] = pd.to_numeric(df["scaled_density"], errors="coerce")
+    # Since 2026-10-23 the logging script records sample_media_ratio as a
+    # (sample, media) tuple, e.g. "(2, 18)" - a to_numeric() would silently
+    # blank it. Keep it as "sample:media" text ("2:18"); empty stays empty.
+    df["sample_media_ratio"] = df["sample_media_ratio"].apply(_ratio_text)
 
     out = df[COLUMNS].sort_values(["label", "dt", "sep"]).reset_index(drop=True)
     out.to_csv(out_path, index=False)
 
     n_labels = out["label"].nunique()
     n_exps = out["source_experiment"].nunique()
+    n_scaled = out["scaled_density"].notna().sum()
     print(f"wrote {out_path} ({len(out)} rows, {n_labels} culture label(s), "
-          f"{n_exps} Metaexperiment(s))")
+          f"{n_exps} Metaexperiment(s), {n_scaled} row(s) with a scaled_density)")
 
 
 if __name__ == "__main__":

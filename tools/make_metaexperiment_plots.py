@@ -22,6 +22,19 @@ legend with 60+ entries is unreadable, so there is no default legend at
 all - instead a search-as-you-type MultiChoice box lets you isolate one or
 more cultures by label, and hover always shows which label/day/experiment a
 point belongs to regardless of the filter.
+
+scaled_density (shown alongside density, not instead of it)
+--------------------------------------------------------------
+Starting with the two Metaexperiments merged into the export on
+2026-09-22, some rows carry a second, `scaled_density` value alongside
+`density` (see tools/parse_metaexperiments.py for what's known and not
+known about what it represents). Per Yatharth, both are shown rather than
+this script picking one: whenever a row's `scaled_density` is present and
+differs from its `density`, a second marker (a lighter, hollow triangle)
+is drawn at the same date/time and coloured the same as the rest of that
+culture's series, with its own hover tooltip. Every pre-2026-09-14 row has
+no `scaled_density` at all, so this adds nothing to the existing 99 rows -
+it only appears where the data actually has both numbers.
 """
 
 import os
@@ -67,7 +80,8 @@ def main():
         x_axis_type="datetime", y_axis_type="log", height=560, width=980,
         tools="pan,box_zoom,wheel_zoom,reset,save",
         title="Metaexperiment cultures — raw density (before separation, circle) vs. "
-              "separator density (after separation, square), by real date",
+              "separator density (after separation, square), by real date; hollow "
+              "triangle = scaled_density, where a reading has one",
         x_axis_label="date / time", y_axis_label="density (cells/mL)",
     )
 
@@ -118,6 +132,30 @@ def main():
             all_renderers.append(r)
             renderer_label.append(label)
 
+        # scaled_density: shown alongside density, never instead of it (per
+        # Yatharth) - only where a row actually has one and it differs from
+        # density, so the ~99 pre-2026-09-14 rows (no scaled_density at all)
+        # add nothing here. See the module docstring for what's/isn't known
+        # about what this field means.
+        has_scaled = g["scaled_density"].notna() & (g["scaled_density"] != g["density"])
+        scaled = g[has_scaled]
+        if not scaled.empty:
+            src_scaled = ColumnDataSource(dict(
+                x=scaled["dt"], y=scaled["scaled_density"], label=[label] * len(scaled),
+                kind=["separator" if s else "raw" for s in scaled["sep"]],
+                df=scaled["df"], ts=scaled["dt"].astype(str),
+                source_experiment=scaled["source_experiment"], plain_density=scaled["density"],
+            ))
+            r_scaled = p.scatter("x", "y", source=src_scaled, size=11, color=colour,
+                                  marker="triangle", fill_alpha=0.0, line_width=1.5)
+            p.add_tools(HoverTool(renderers=[r_scaled], tooltips=[
+                ("culture", "@label"), ("day", "@ts"), ("reading", "@kind"),
+                ("scaled_density", "@y{%.2e}"), ("density", "@plain_density{%.2e}"),
+                ("count dilution (df)", "@df"), ("experiment", "@source_experiment"),
+            ], formatters={"@y": "printf", "@plain_density": "printf"}))
+            all_renderers.append(r_scaled)
+            renderer_label.append(label)
+
     p.xgrid.grid_line_color = GRID
     p.ygrid.grid_line_color = GRID
     p.toolbar.logo = None
@@ -127,10 +165,16 @@ def main():
         options=labels, value=[], width=980,
         placeholder="start typing a culture label…",
     )
+    n_scaled_pts = int((df["scaled_density"].notna() & (df["scaled_density"] != df["density"])).sum())
+    scaled_note = (
+        f" {n_scaled_pts} reading(s) also have a scaled_density (hollow triangle, "
+        "same colour as the culture) shown alongside their density."
+        if n_scaled_pts else ""
+    )
     note = Div(text=(
         f"<i>{len(labels)} culture label(s) across {df['source_experiment'].nunique()} "
         "Metaexperiment day(s). Most labels appear on a single day (one raw + "
-        "one separator point); a few span more than one day.</i>"
+        f"one separator point); a few span more than one day.{scaled_note}</i>"
     ))
 
     callback = CustomJS(args=dict(renderers=all_renderers, owner=renderer_label), code="""
@@ -143,7 +187,8 @@ def main():
 
     output_file(out_path, title="cell-counts — Metaexperiment cultures", mode="inline")
     save(column(picker, note, p, sizing_mode="stretch_width"))
-    print(f"wrote {out_path} ({len(df)} rows, {len(labels)} culture(s))")
+    print(f"wrote {out_path} ({len(df)} rows, {len(labels)} culture(s), "
+          f"{n_scaled_pts} with a distinct scaled_density)")
 
 
 if __name__ == "__main__":

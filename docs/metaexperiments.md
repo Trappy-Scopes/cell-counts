@@ -58,6 +58,36 @@ One more thing worth knowing about the export as it stands: the label
 `B-B raw` is reused across two unrelated early experiments
 (2025-02-19 and 2025-02-20) rather than naming one culture.
 
+Two more Metaexperiments were merged in on 2026-09-22:
+`675c564a1e` (2026-09-14, culture `Kptx5-31Aug26`) and `5b5ab9af8a`
+(2026-09-21, culture `31Aug26`) - 4 rows in total, bringing the export to
+**103 rows, 55 experiments, 66 labels**. Each contributed a raw + separator
+pair except `675c564a1e`, whose export had a third, leading row with every
+payload field blank (`counts`, `density`, `label`, `sep` all empty) - a
+stream-open marker rather than a real reading, dropped the same way other
+placeholder rows are.
+
+### scaled_density
+
+Both of these two experiments' raw exports carry a field no earlier
+reading has: `scaled_density`, alongside a `sample_media_ratio` that's
+blank on every row seen so far. Neither is defined anywhere in the copies
+of `trappy-explorer`, `cellcounter`, or `cellcounting.py` available when
+this was written - and notably, `cellcounter/counter.py`,
+`cellcounter/loader.py` and `cellcounting.py` were all touched right
+around 2026-09-21 on the instrument machine, so this reads as a genuinely
+new framework field, not a gap in what this repo's tooling parses. What's
+known empirically, from these 4 rows: `scaled_density` equals `density`
+exactly for each experiment's raw (`sep = False`) reading, and is exactly
+10x `density` for each experiment's separator (`sep = True`) reading.
+
+Per Yatharth: show both rather than picking one. The Metaexperiments plot
+draws a hollow triangle at `scaled_density` alongside the usual circle/
+square wherever a row has one and it differs from `density` - see
+tools/make_metaexperiment_plots.py. All 99 rows from before 2026-09-14
+have no `scaled_density` at all (not "assumed equal to density" - simply
+never recorded), so nothing changes for them.
+
 `sep` (raw vs. separator density) is not a clean boolean in the source
 data — reviewed and normalized as follows:
 
@@ -73,7 +103,12 @@ data — reviewed and normalized as follows:
   and one more unlogged reading (2026-07-03, `Bptx13-31May26`, likewise
   treated as raw).
 
-Refreshing this export means re-running the same scan against the
-`~/experiments/` archive and replacing
-`data/metaexperiments/all_cell_counts.csv`; `tools/parse_metaexperiments.py`
-needs no changes to pick up a refreshed file.
+Refreshing this export means either re-running the same full scan against
+the `~/experiments/` archive and replacing
+`data/metaexperiments/all_cell_counts.csv` wholesale, or - as with the two
+Metaexperiments merged in on 2026-09-22 - hand-merging a small, individually
+exported `cell_counts` stream dump (dropped straight into
+`data/metaexperiments/` as its own `*_cell_counts.csv` file) into the
+existing export. Either way, `tools/parse_metaexperiments.py` itself needs
+no changes to pick up a refreshed file - it only reads
+`all_cell_counts.csv`, never the individual per-experiment dumps directly.
