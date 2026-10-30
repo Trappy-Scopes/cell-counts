@@ -1,0 +1,12 @@
+---
+ts: 1792156061.565252
+level: INFO
+logger: root
+message: 'Added measurment stream: cell_counts'
+
+---
+ts: 1792156061.572483
+level: INFO
+logger: root
+message: 'Added measurment stream: media_additions'
+

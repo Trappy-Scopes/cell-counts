@@ -1,0 +1,5 @@
+label,mutant,condition,perturbed,n_points,growth_rate_per_hr,growth_rate_per_24hr,doubling_time_hr,r_squared
+A6-22Sept26,CC125,(none) -> 1uM cyclohexamine,False,2,,,,
+B2-22Sept26,CC125,1uM cyclohexamine,False,1,,,,
+B6-22Sept26,CC125,(none) -> 1uM cyclohexamine,False,2,,,,
+Lptx18B-14Sept26,CC2894,(none) -> 1uM cyclohexamine -> (none),True,3,0.11511970367286467,2.762872888148752,6.021099416044882,0.629086028164003

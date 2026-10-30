@@ -1,0 +1,10 @@
+label,volume_before_ml,media_added_ml,dilution_fraction,timestamp,note
+A1-22Sept26,1.0,19.0,0.95,2026-10-06 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 2026-10-06 16:15:00; counts at 17:30 were taken BEFORE this day's dilution). experiment.yaml unchanged.
+B1-22Sept26,1.0,19.0,0.95,2026-10-06 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 2026-10-06 16:15:00; counts at 17:30 were taken BEFORE this day's dilution). experiment.yaml unchanged.
+B1-22Sept26-DCMU,1.0,19.0,0.95,2026-10-06 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 2026-10-06 16:15:00; counts at 17:30 were taken BEFORE this day's dilution). experiment.yaml unchanged.
+C1-22Sept26,1.0,19.0,0.95,2026-10-06 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 26-10-06 16:15:00; counts at 17:30 were taken BEFORE this day's dilution); year typo 26 -> 2026 also fixed (logged as 0026). experiment.yaml unchanged.
+D1-22Sept26,1.0,19.0,0.95,2026-10-06 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 26-10-06 16:15:00; counts at 17:30 were taken BEFORE this day's dilution); year typo 26 -> 2026 also fixed (logged as 0026). experiment.yaml unchanged.
+Lptx10A-14Sept26,4.0,16.0,0.8,2026-10-06 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 2026-10-06 16:15:00; counts at 17:30 were taken BEFORE this day's dilution). experiment.yaml unchanged.
+Lptx10A-14Sept26,4.0,16.0,0.8,2026-10-07 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 2026-10-07 15:10:00; counts at 17:30 were taken BEFORE this day's dilution). experiment.yaml unchanged.
+Lptx10A-14Sept26,4.0,16.0,0.8,2026-10-08 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 2026-10-08 16:00:00; counts at 17:30 were taken BEFORE this day's dilution). experiment.yaml unchanged.
+Lptx10A-14Sept26-DCMU,1.0,19.0,0.95,2026-10-06 18:00:00,Timestamp corrected 2026-10-30: dilution time set to 18:00 (was 2026-10-06 16:15:00; counts at 17:30 were taken BEFORE this day's dilution). experiment.yaml unchanged.

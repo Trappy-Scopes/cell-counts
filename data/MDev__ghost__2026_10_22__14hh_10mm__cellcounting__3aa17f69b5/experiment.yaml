@@ -1,0 +1,737 @@
+attribs: {}
+created: 2026-10-22 14:10:24.999428
+eid: 3aa17f69b5
+events:
+- attribs: &id001 {}
+  dt: 2026-10-22 14:10:25.254323
+  eid: 3aa17f69b5
+  exptime: 0.01224099996034056
+  machinetime: 1792674625254332000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessionid: 3aa17f69b5
+  sessiontime: 0.018449500028509647
+  sid: 3aa17f69b5
+  type: session
+- attribs: *id001
+  dt: 2026-10-22 14:10:25.255102
+  eid: 3aa17f69b5
+  exptime: 0.013009499991312623
+  machinetime: 1792674625255105000
+  mid: null
+  path: /Users/byatharth/trappyscopes/scripts/growthexps/cellcounting.py
+  payload: scripts/cellcounting.py
+  payload_kind: scripts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.01922475005267188
+  sid: 3aa17f69b5
+  type: payload_added
+- attribs: *id001
+  detections: []
+  dt: 2026-10-22 14:10:25.259471
+  eid: 3aa17f69b5
+  exptime: 0.017375499999616295
+  machinetime: 1792674625259473000
+  measureid: ce817fde84
+  measurements:
+  - counts
+  mid: null
+  monitors:
+  - df
+  - density
+  - label
+  - sep
+  - mutant
+  - condition
+  name: cell_counts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.023592834011651576
+  sid: 3aa17f69b5
+  type: measurement_stream
+- attribs: *id001
+  detections: []
+  dt: 2026-10-22 14:10:25.265738
+  eid: 3aa17f69b5
+  exptime: 0.02364104095613584
+  machinetime: 1792674625265739000
+  measureid: da40aa79f3
+  measurements:
+  - media_added_ml
+  mid: null
+  monitors:
+  - label
+  - volume_before_ml
+  - dilution_fraction
+  name: media_additions
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 0.02985837502637878
+  sid: 3aa17f69b5
+  type: measurement_stream
+- attribs: *id001
+  dt: 2026-10-22 14:11:35.997819
+  eid: 3aa17f69b5
+  exptime: 70.75608291599201
+  machinetime: 1792674695997967000
+  mid: null
+  note: Growth curve experiments with 1uM cyclohexamine and one replicate with HEPES
+    buffered media instead of TRIS.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 70.76221770903794
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-22 14:13:34.948370
+  eid: 3aa17f69b5
+  exptime: 189.71166929096216
+  machinetime: 1792674814949673000
+  mid: null
+  note: 1uM cycloxamine was used by a paper to block "quorum-sensing". Since cyclohexamine
+    is a protein synthesis ionhibitor, I am doing growth curves at this low concentration,
+    instead of (35uM, which completely blocks protein transcriotion, as mentioned
+    by this paper), to check if normal growth and motility can persist on long-timescales
+    (multiple division periods).
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 189.7177661670139
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-22 14:14:30.042770
+  eid: 3aa17f69b5
+  exptime: 244.80668049998349
+  machinetime: 1792674870042925000
+  mid: null
+  note: 'Paper -> doi: 10.1016/j.isci.2020.101714'
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 244.8128182090004
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-22 14:15:09.463526
+  eid: 3aa17f69b5
+  exptime: 284.22871979099
+  machinetime: 1792674909463666000
+  mid: null
+  note: This experiment will be a multi-session experiment, to also evaluate the efficacy
+    of the new code structu new trappy-scopes code changes.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 284.23483620904153
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-22 14:15:48.374663
+  eid: 3aa17f69b5
+  exptime: 323.1413646249566
+  machinetime: 1792674948375000000
+  mid: null
+  note: Cells were dilluted on the 20th of October 2026. However, counting could not
+    be performed on the next day, i.e. on the 21st. Counting will be performed on
+    the 22nd and onwards.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 323.14743758400436
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-22 14:16:40.604316
+  eid: 3aa17f69b5
+  exptime: 375.37249749997864
+  machinetime: 1792675000604468000
+  mid: null
+  note: For the HEPES culture, the pH of the supernatent in comparision to the TAPP
+    controls will be noted, to also confirm buffering capabilities.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 375.37861137499567
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-23 11:17:06.554413
+  eid: 3aa17f69b5
+  exptime: 16559.948943457974
+  machinetime: 1792750626557462000
+  mid: null
+  note: Contamination was observed on several samples. Confirmed on Lptx18A (main
+    culture), A with cyclohexamine. Counting was compromised because sample was spent
+    checking for contamination and motility.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 16559.954437251028
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-23 11:17:57.061569
+  eid: 3aa17f69b5
+  exptime: 16610.45454537496
+  machinetime: 1792750677061754000
+  mid: null
+  note: Sample A, B, Bc, LH were observed to be motilie and Bc and LH were counted.
+    However counts will not be reported as of now.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 16610.460700709024
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-23 11:18:41.285670
+  eid: 3aa17f69b5
+  exptime: 16654.680047124973
+  machinetime: 1792750721285734000
+  mid: null
+  note: On 23rd 11AM, the rest of the samples were observed to be green. Counts will
+    be performed on the samples and new cultures will be inoculated for counting from
+    Monday.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 16654.686231626023
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-23 11:19:04.055120
+  eid: 3aa17f69b5
+  exptime: 16677.450362707954
+  machinetime: 1792750744055219000
+  mid: null
+  note: This experiment will be closed and another one will be opened. Motility will
+    also be reported.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 16677.456518584047
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-23 11:25:12.911956
+  eid: 3aa17f69b5
+  exptime: 17046.329876249947
+  machinetime: 1792751112916601000
+  mid: null
+  note: Actually I will log the counted cultures.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 17046.32929862605
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: *id001
+  dt: 2026-10-23 11:33:25.639256
+  eid: 3aa17f69b5
+  exptime: 17539.102746624965
+  machinetime: 1792751605639291000
+  mid: null
+  note: Day 1 date and time are assumed.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 17539.10894145904
+  sid: 3aa17f69b5
+  type: user_note
+- attribs: &id002 {}
+  dt: 2026-10-23 14:33:55.741610
+  eid: 3aa17f69b5
+  exptime: 17541.912379999994
+  machinetime: 1792762435741631000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessionid: bd68bf8206
+  sessiontime: 62.402739333047066
+  sid: bd68bf8206
+  type: session
+- attribs: *id002
+  dt: 2026-10-23 14:33:55.744166
+  eid: 3aa17f69b5
+  exptime: 17541.914914833964
+  machinetime: 1792762435744169000
+  mid: null
+  path: /Users/byatharth/trappyscopes/scripts/growthexps/cellcounting.py
+  payload: scripts/cellcounting.py
+  payload_kind: scripts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 62.40528720803559
+  sid: bd68bf8206
+  type: payload_skip
+- attribs: *id002
+  dt: 2026-10-23 14:35:13.430929
+  eid: 3aa17f69b5
+  exptime: 17619.601304833952
+  machinetime: 1792762513431057000
+  mid: null
+  note: Day 2 counting. The A and B cultures are actually A6 and B6. So one of the
+    readings is wrong.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 140.09161712502828
+  sid: bd68bf8206
+  type: user_note
+- attribs: *id002
+  dt: 2026-10-23 15:22:43.465492
+  eid: 3aa17f69b5
+  exptime: 20469.824858041946
+  machinetime: 1792765363467124000
+  mid: null
+  note: Day 2 of counting - 23rd.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 2990.31499670801
+  sid: bd68bf8206
+  type: user_note
+- attribs: *id002
+  dt: 2026-10-23 15:28:10.996670
+  eid: 3aa17f69b5
+  exptime: 20797.36340141698
+  machinetime: 1792765690996842000
+  mid: null
+  note: LptxB, A6, A6-cyclo, B6, B6-cyclo are clean and motile. Motility cannot be
+    quantified or qualified because the observation window is short.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 3317.853556958027
+  sid: bd68bf8206
+  type: user_note
+- attribs: *id002
+  dt: 2026-10-23 15:28:26.971920
+  eid: 3aa17f69b5
+  exptime: 20813.338796458964
+  machinetime: 1792765706971972000
+  mid: null
+  note: L-HEPES media was contaminated, but showed good growth.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 3333.829131208011
+  sid: bd68bf8206
+  type: user_note
+- attribs: *id002
+  dt: 2026-10-23 15:28:42.358364
+  eid: 3aa17f69b5
+  exptime: 20828.725708416954
+  machinetime: 1792765722358434000
+  mid: null
+  note: Will maybe report color or count again on Monday.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 3349.2160087910015
+  sid: bd68bf8206
+  type: user_note
+- attribs: &id003 {}
+  dt: 2026-10-26 17:40:05.324642
+  eid: 3aa17f69b5
+  exptime: 20831.465089999954
+  machinetime: 1793036405324675000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessionid: 555211a601
+  sessiontime: 109.2368490420049
+  sid: 555211a601
+  type: session
+- attribs: *id003
+  dt: 2026-10-26 17:40:05.327256
+  eid: 3aa17f69b5
+  exptime: 20831.46766670898
+  machinetime: 1793036405327261000
+  mid: null
+  path: /Users/byatharth/trappyscopes/scripts/growthexps/cellcounting.py
+  payload: scripts/cellcounting.py
+  payload_kind: scripts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 109.23944966704585
+  sid: 555211a601
+  type: payload_skip
+- attribs: *id003
+  dt: 2026-10-26 17:41:12.442144
+  eid: 3aa17f69b5
+  exptime: 20898.595678916958
+  machinetime: 1793036472443971000
+  mid: null
+  note: 'Observations on Monday: Every culture was clean and motile. Samples were
+    collected on 10Am in the morning00 in the morning and observed around 1600.'
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 176.36684366699774
+  sid: 555211a601
+  type: user_note
+- attribs: *id003
+  dt: 2026-10-26 17:41:29.237774
+  eid: 3aa17f69b5
+  exptime: 20915.390270792006
+  machinetime: 1793036489237906000
+  mid: null
+  note: Only B-Cyclohex had a bunch of lysed cells. Repeating the experiment.
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 193.16198008303763
+  sid: 555211a601
+  type: user_note
+- attribs: &id004 {}
+  dt: 2026-10-26 17:43:00.878518
+  eid: 3aa17f69b5
+  exptime: 20918.210718332964
+  machinetime: 1793036580878535000
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessionid: 778d2614cb
+  sessiontime: 5.352717249945272
+  sid: 778d2614cb
+  type: session
+- attribs: *id004
+  dt: 2026-10-26 17:43:00.880120
+  eid: 3aa17f69b5
+  exptime: 20918.212303791952
+  machinetime: 1793036580880126000
+  mid: null
+  path: /Users/byatharth/trappyscopes/scripts/growthexps/cellcounting.py
+  payload: scripts/cellcounting.py
+  payload_kind: scripts
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 5.35431212495314
+  sid: 778d2614cb
+  type: payload_skip
+mstreams:
+  cell_counts:
+    condition:
+      axis_label: condition
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+    counts:
+      axis_label: counts
+      description: null
+      dtype: null
+      modality: measurement
+      unit: null
+      unit_latex: null
+    density:
+      axis_label: density
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+    df:
+      axis_label: df
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+    label:
+      axis_label: label
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+    mutant:
+      axis_label: mutant
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+    sep:
+      axis_label: sep
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+  media_additions:
+    dilution_fraction:
+      axis_label: dilution_fraction
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+    label:
+      axis_label: label
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+    media_added_ml:
+      axis_label: media_added_ml
+      description: null
+      dtype: null
+      modality: measurement
+      unit: null
+      unit_latex: null
+    volume_before_ml:
+      axis_label: volume_before_ml
+      description: null
+      dtype: null
+      modality: monitor
+      unit: null
+      unit_latex: null
+name: MDev__ghost__2026_10_22__14hh_10mm__cellcounting__3aa17f69b5
+results:
+- attribs: {}
+  condition: null
+  counts: !!python/tuple
+  - 95
+  - 69
+  - 118
+  - 106
+  density: 1940000.0
+  df: 2
+  dt: 2026-10-22 18:30:00
+  eid: 3aa17f69b5
+  exptime: 17144.62992345798
+  label: Lptx18B-14Sept26
+  machinetime: 1792751211218529000
+  measureid: ce817fde84
+  measureidx: 0
+  mid: null
+  mutant: CC2894
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 17144.636033709045
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+- attribs: {}
+  dilution_fraction: 0.8
+  dt: 2026-10-22 18:30:00
+  eid: 3aa17f69b5
+  exptime: 17331.01890341699
+  label: Lptx18B-14Sept26
+  machinetime: 1792751397600995000
+  measureid: da40aa79f3
+  measureidx: 0
+  media_added_ml: 16
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 17331.024886876054
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+  volume_before_ml: 4
+- attribs: {}
+  condition: 1uM cyclohexamine
+  counts: !!python/tuple
+  - 6
+  - 2
+  - 1
+  - 3
+  - 3
+  density: 60000.0
+  df: 2
+  dt: 2026-10-22 18:30:00
+  eid: 3aa17f69b5
+  exptime: 17526.40238854196
+  label: B2-22Sept26
+  machinetime: 1792751592940664000
+  measureid: ce817fde84
+  measureidx: 1
+  mid: null
+  mutant: CC125
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 17526.408520292025
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+- attribs: {}
+  condition: 1uM cyclohexamine
+  counts: !!python/tuple
+  - 9
+  - 13
+  - 10
+  - 14
+  density: 230000.0
+  df: 2
+  dt: 2026-10-22 18:30:00
+  eid: 3aa17f69b5
+  exptime: 17528.41610904195
+  label: Lptx18B-14Sept26
+  machinetime: 1792751594954025000
+  measureid: ce817fde84
+  measureidx: 2
+  mid: null
+  mutant: CC2894
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 17528.422300876002
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+- attribs: {}
+  condition: null
+  counts: !!python/tuple
+  - 80
+  - 87
+  - 63
+  - 66
+  density: 1480000.0
+  df: 2
+  dt: 2026-10-23 15:23:27.858595
+  eid: 3aa17f69b5
+  exptime: 20514.23602958396
+  label: Lptx18B-14Sept26
+  machinetime: 1792765407877335000
+  measureid: ce817fde84
+  measureidx: 3
+  mid: null
+  mutant: CC2894
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 3034.726287041034
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+- attribs: {}
+  dilution_fraction: 0.95
+  dt: 2026-10-23 15:24:12.385060
+  eid: 3aa17f69b5
+  exptime: 20558.745659708977
+  label: Lptx18B-14Sept26
+  machinetime: 1792765452385763000
+  measureid: da40aa79f3
+  measureidx: 1
+  media_added_ml: 19
+  mid: null
+  scopeid: MDev
+  scriptid: null
+  sessiontime: 3079.2358644159976
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+  volume_before_ml: 1
+- attribs: {}
+  condition: null
+  counts: !!python/tuple
+  - 0
+  - 0
+  - 2
+  - 0
+  - 1
+  density: 12000.0
+  df: 2
+  dt: 2026-10-23 15:25:50.750691
+  eid: 3aa17f69b5
+  exptime: 20657.12685208395
+  label: A6-22Sept26
+  machinetime: 1792765550764286000
+  measureid: ce817fde84
+  measureidx: 4
+  mid: null
+  mutant: CC125
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 3177.617122666037
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+- attribs: {}
+  condition: 1uM cyclohexamine
+  counts: !!python/tuple
+  - 4
+  - 5
+  - 2
+  - 2
+  - 1
+  density: 56000.0
+  df: 2
+  dt: 2026-10-23 15:26:02.902553
+  eid: 3aa17f69b5
+  exptime: 20669.266197166988
+  label: A6-22Sept26
+  machinetime: 1792765562903304000
+  measureid: ce817fde84
+  measureidx: 5
+  mid: null
+  mutant: CC125
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 3189.756560458045
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+- attribs: {}
+  condition: null
+  counts: !!python/tuple
+  - 14
+  - 35
+  - 28
+  - 22
+  - 26
+  density: 500000.0
+  df: 2
+  dt: 2026-10-23 15:26:33.591071
+  eid: 3aa17f69b5
+  exptime: 20699.956438958994
+  label: B6-22Sept26
+  machinetime: 1792765593592719000
+  measureid: ce817fde84
+  measureidx: 6
+  mid: null
+  mutant: CC125
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 3220.446527291031
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+- attribs: {}
+  condition: 1uM cyclohexamine
+  counts: !!python/tuple
+  - 11
+  - 22
+  - 3
+  - 4
+  - 13
+  density: 212000.0
+  df: 2
+  dt: 2026-10-23 15:26:43.678942
+  eid: 3aa17f69b5
+  exptime: 20710.044719708967
+  label: B6-22Sept26
+  machinetime: 1792765603680725000
+  measureid: ce817fde84
+  measureidx: 7
+  mid: null
+  mutant: CC125
+  scopeid: MDev
+  scriptid: null
+  sep: null
+  sessiontime: 3230.5350835410063
+  sid: 3aa17f69b5
+  success: null
+  type: measurement
+syspermastate:
+  hostname: macair-yatharth.local
+  mac_address: 32:4E:DE:97:04:10
+  machine: x86_64
+  os:
+  - Darwin
+  - 24.6.0
+  python_version: 3.12.4
+users:
+- login_time: 2026-10-22 14:10:14.981626
+  user: ghost
+- login_time: 2026-10-23 14:32:51.627994
+  user: ghost
+- login_time: 2026-10-26 17:38:14.266524
+  user: ghost
+- login_time: 2026-10-26 17:42:53.792770
+  user: ghost
