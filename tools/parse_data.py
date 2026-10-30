@@ -28,6 +28,10 @@ cell_counts rows also get elapsed_hours: hours since that colony's own first
 reading in that experiment, which is what every plot uses for its x-axis (not
 a bare timestamp - experiments start on different dates).
 
+Treated cultures (a non-blank, non-vehicle `condition`, e.g. "10uM DCMU") are
+kept out of their strain's group: `mutant` becomes e.g. "CC125 + 10uM DCMU" in
+cell_counts and growth_summary, with the logged strain in `mutant_raw`.
+
 Outputs, at the repo root under build/ (gitignored; rebuilt by CI on every
 push, never committed):
     build/all_cell_counts.csv
@@ -38,11 +42,55 @@ Standard library + pandas. Run from the repo root.
 """
 
 import os
+import re
 
 import pandas as pd
 
 DATA_DIR = "data"
 BUILD_DIR = "build"
+
+# A culture counted under a *treatment* (the per-count `condition` from
+# cellcounting.new_count, e.g. "10uM DCMU", "1uM cyclohexamine") is not
+# comparable to an untreated culture of the same strain, so in the build/ CSVs
+# its `mutant` becomes "<mutant> + <treatment>" (e.g. "CC125 + 10uM DCMU").
+# Every downstream plot then colours, filters and groups it separately
+# instead of pooling an inhibited culture into the strain's growth rates.
+# The strain as logged is kept in `mutant_raw`. A colony counts as treated if
+# ANY of its counts had a treatment, even if it was later released.
+#
+# Not treatments: blank, "(none)", and vehicle controls - a condition with a
+# standalone "VC" / "vehicle" / "control" word, e.g. "EtOH-VC".
+VEHICLE_WORDS = {"vc", "vehicle", "control", "ctrl", "none"}
+
+
+def _is_treatment(condition):
+    text = str(condition).strip()
+    if not text or text.lower() in ("nan", "none", "(none)"):
+        return False
+    words = {w for w in re.split(r"[^a-z0-9]+", text.lower()) if w}
+    return not (words & VEHICLE_WORDS)
+
+
+def _treatment(conditions):
+    """'10uM DCMU' (or 'A + B' in first-seen order) from per-count condition
+    strings or a growth_summary history ('(none) -> 10uM DCMU -> (none)'),
+    else None. Vehicle controls and blanks are ignored."""
+    found = []
+    for value in pd.Series(conditions).dropna().astype(str):
+        for part in value.split("->"):
+            part = part.strip()
+            if _is_treatment(part) and part not in found:
+                found.append(part)
+    return " + ".join(found) or None
+
+
+def _group_treated(frame, treatment_of_label):
+    """Add mutant_raw and re-label `mutant` for treated colonies."""
+    frame["mutant_raw"] = frame["mutant"]
+    for label, treatment in treatment_of_label.items():
+        if treatment:
+            rows = (frame["label"] == label) & frame["mutant"].notna()
+            frame.loc[rows, "mutant"] = frame.loc[rows, "mutant"].astype(str) + " + " + treatment
 
 
 def _experiment_dirs():
@@ -91,6 +139,10 @@ def main():
         cc = _read_csv(os.path.join(analysis, "cell_counts.csv"))
         if cc is not None:
             cc["timestamp"] = pd.to_datetime(cc["timestamp"])
+            if "mutant" in cc.columns:
+                treated = ({lab: _treatment(g["condition"]) for lab, g in cc.groupby("label")}
+                           if "condition" in cc.columns else {})   # older experiments: no condition column
+                _group_treated(cc, treated)
             cc["experiment_id"] = eid
             cc["experiment_name"] = name
             cc["experiment_start"] = cc["timestamp"].min()
@@ -109,6 +161,9 @@ def main():
 
         gs = _read_csv(os.path.join(analysis, "growth_summary.csv"))
         if gs is not None:
+            if "mutant" in gs.columns:
+                _group_treated(gs, {r.label: _treatment([r.condition]) for r in gs.itertuples()}
+                               if "condition" in gs.columns else {})
             gs["experiment_id"] = eid
             gs["experiment_name"] = name
             if cc is not None:

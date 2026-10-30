@@ -33,3 +33,17 @@ a workflow artifact on every CI run if you need a standalone copy.
 One number per colony: `ln(2) / growth_rate_per_hr`, with the fit's R² as a
 reliability check. These same numbers, alongside legacy data, are on the
 [home page](index.md) grouped by strain.
+
+## Treated cultures (DCMU, cycloheximide, ...)
+
+A culture counted with a treatment in its `condition` (for example
+`condition="10uM DCMU"` or `"1uM cyclohexamine"` in `new_count`) is an
+inhibited culture, so its growth rate is not comparable to the untreated
+cultures of the same strain. In the aggregated data and every plot on this
+site it is therefore grouped as its own strain, e.g. **CC125 + 10uM DCMU**,
+next to **CC125** (the strain as logged is kept in the `mutant_raw` column
+of `build/all_cell_counts.csv` and `all_growth_summary.csv`). A culture
+counts as treated if any of its counts had a treatment, even if it was
+released later. Blank conditions and vehicle controls such as `EtOH-VC` stay
+with their strain; the vehicle words are listed in `VEHICLE_WORDS` in
+`tools/parse_data.py`.
