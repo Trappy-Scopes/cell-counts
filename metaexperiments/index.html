@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/tsicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -526,6 +526,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Where this data comes from">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scaled_density" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scaled_density
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -714,6 +731,32 @@ matched "metaexperiment":</p>
 <p>One more thing worth knowing about the export as it stands: the label
 <code>B-B raw</code> is reused across two unrelated early experiments
 (2025-02-19 and 2025-02-20) rather than naming one culture.</p>
+<p>Two more Metaexperiments were merged in on 2026-09-22:
+<code>675c564a1e</code> (2026-09-14, culture <code>Kptx5-31Aug26</code>) and <code>5b5ab9af8a</code>
+(2026-09-21, culture <code>31Aug26</code>) - 4 rows in total, bringing the export to
+<strong>103 rows, 55 experiments, 66 labels</strong>. Each contributed a raw + separator
+pair except <code>675c564a1e</code>, whose export had a third, leading row with every
+payload field blank (<code>counts</code>, <code>density</code>, <code>label</code>, <code>sep</code> all empty) - a
+stream-open marker rather than a real reading, dropped the same way other
+placeholder rows are.</p>
+<h3 id="scaled_density">scaled_density<a class="headerlink" href="#scaled_density" title="Permanent link">&para;</a></h3>
+<p>Both of these two experiments' raw exports carry a field no earlier
+reading has: <code>scaled_density</code>, alongside a <code>sample_media_ratio</code> that's
+blank on every row seen so far. Neither is defined anywhere in the copies
+of <code>trappy-explorer</code>, <code>cellcounter</code>, or <code>cellcounting.py</code> available when
+this was written - and notably, <code>cellcounter/counter.py</code>,
+<code>cellcounter/loader.py</code> and <code>cellcounting.py</code> were all touched right
+around 2026-09-21 on the instrument machine, so this reads as a genuinely
+new framework field, not a gap in what this repo's tooling parses. What's
+known empirically, from these 4 rows: <code>scaled_density</code> equals <code>density</code>
+exactly for each experiment's raw (<code>sep = False</code>) reading, and is exactly
+10x <code>density</code> for each experiment's separator (<code>sep = True</code>) reading.</p>
+<p>Per Yatharth: show both rather than picking one. The Metaexperiments plot
+draws a hollow triangle at <code>scaled_density</code> alongside the usual circle/
+square wherever a row has one and it differs from <code>density</code> - see
+tools/make_metaexperiment_plots.py. All 99 rows from before 2026-09-14
+have no <code>scaled_density</code> at all (not "assumed equal to density" - simply
+never recorded), so nothing changes for them.</p>
 <p><code>sep</code> (raw vs. separator density) is not a clean boolean in the source
 data — reviewed and normalized as follows:</p>
 <ul>
@@ -729,10 +772,15 @@ data — reviewed and normalized as follows:</p>
   and one more unlogged reading (2026-07-03, <code>Bptx13-31May26</code>, likewise
   treated as raw).</li>
 </ul>
-<p>Refreshing this export means re-running the same scan against the
-<code>~/experiments/</code> archive and replacing
-<code>data/metaexperiments/all_cell_counts.csv</code>; <code>tools/parse_metaexperiments.py</code>
-needs no changes to pick up a refreshed file.</p>
+<p>Refreshing this export means either re-running the same full scan against
+the <code>~/experiments/</code> archive and replacing
+<code>data/metaexperiments/all_cell_counts.csv</code> wholesale, or - as with the two
+Metaexperiments merged in on 2026-09-22 - hand-merging a small, individually
+exported <code>cell_counts</code> stream dump (dropped straight into
+<code>data/metaexperiments/</code> as its own <code>*_cell_counts.csv</code> file) into the
+existing export. Either way, <code>tools/parse_metaexperiments.py</code> itself needs
+no changes to pick up a refreshed file - it only reads
+<code>all_cell_counts.csv</code>, never the individual per-experiment dumps directly.</p>
 
 
 
@@ -788,10 +836,10 @@ needs no changes to pick up a refreshed file.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.top", "toc.integrate", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.top", "toc.integrate", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>
