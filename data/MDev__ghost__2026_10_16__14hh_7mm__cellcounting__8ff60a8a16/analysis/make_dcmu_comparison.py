@@ -4,7 +4,7 @@
 Usage: python3 make_dcmu_comparison.py <analysis_dir>
 Reads analysis/cell_counts.csv, writes analysis/dcmu_comparison.png.
 Minimal: legend only (it names every colony id), no titles or annotations. Pairs each DCMU culture with its untreated twin by name ("<twin>-DCMU"); other replicates of the
-same strain are drawn as thin context lines. Density is dilution-compensated; x = hours since
+same strain are drawn as thin context lines. x = hours since
 that culture's first count.
 """
 import sys, os
@@ -35,12 +35,12 @@ for ax, (mutant, twin, d) in zip(axes, strains):
               and cc.loc[cc.label == l, "mutant"].iloc[0] == mutant]
     for i, l in enumerate(others):                       # other untreated replicates, context only
         s = cc[cc.label == l]
-        ax.plot(s.hours, s.compensated_density, color=BLUE, alpha=0.3, lw=1.2, zorder=1,
+        ax.plot(s.hours, s.density, color=BLUE, alpha=0.3, lw=1.2, zorder=1,
                 label=l)
     for lab, col, ls, mk, name in [(twin, BLUE, "-", "o", "no DCMU"), (d, ORANGE, "--", "s", "10 µM DCMU")]:
         s = cc[cc.label == lab]
         cond = s["condition"].dropna().unique()
-        ax.plot(s.hours, s.compensated_density, color=col, ls=ls, marker=mk, ms=7, lw=2,
+        ax.plot(s.hours, s.density, color=col, ls=ls, marker=mk, ms=7, lw=2,
                 markeredgecolor=SURF, markeredgewidth=1.5, zorder=3,
                 label=f"{lab} ({name})")
     ax.set_yscale("log")
@@ -51,7 +51,10 @@ for ax, (mutant, twin, d) in zip(axes, strains):
     for sp in ("left", "bottom"): ax.spines[sp].set_color(GRID)
     ax.tick_params(colors=INK2)
     ax.legend(title=mutant, loc="upper left", fontsize=9, title_fontsize=10, frameon=False, labelcolor=INK, alignment="left")
-axes[0].set_ylabel("Density (cells/mL)", color=INK2)
+# headroom so the legend (upper left) never sits on data
+y0, y1 = axes[0].get_ylim()
+axes[0].set_ylim(y0, y1 * 10 ** 1.1)
+axes[0].set_ylabel("Measured density (cells/mL)", color=INK2)
 fig.tight_layout()
 out = os.path.join(A, "dcmu_comparison.png"); fig.savefig(out, dpi=150, facecolor=SURF)
 print("wrote", out)
