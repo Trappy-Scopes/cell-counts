@@ -1,0 +1,3 @@
+type,scopeid,mid,sid,dt,sessiontime,machinetime,attribs,eid,scriptid,exptime,measureid,measureidx,success,counts,df,density,label,sep,sample_media_ratio,scaled_density
+measurement,MDev,,ceebca222b,2026-10-08 13:39:30.731919,19629.560785583017,1791463170731873000,{},ceebca222b,,19629.556095291977,d3c807a64d,0,,"(44, 31, 49, 33)",2.0,785000.0,Lptx11A-14Sept26,False,,785000.0
+measurement,MDev,,ceebca222b,2026-10-08 13:40:21.104012,19679.934955125005,1791463221103968000,{},ceebca222b,,19679.930312791985,d3c807a64d,1,,"(2, 1, 3, 0, 2)",1.5,24000.0,Lptx11A-14Sept26,True,,240000.0
