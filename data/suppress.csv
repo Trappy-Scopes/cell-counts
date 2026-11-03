@@ -1,0 +1,4 @@
+# Counts kept in the repo but left out of the published site (see tools/suppress.py).
+# dataset: cellcounting | metaexperiment | *     experiment/label: wildcards ok, label * = all
+dataset,experiment,label,reason
+cellcounting,MDev__ghost__2026_10_22__14hh_10mm__cellcounting__3aa17f69b5,*,1 uM cycloheximide run - too few readings to fit a growth rate; kept here as the experiment record only

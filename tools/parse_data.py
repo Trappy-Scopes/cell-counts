@@ -32,6 +32,9 @@ Treated cultures (a non-blank, non-vehicle `condition`, e.g. "10uM DCMU") are
 kept out of their strain's group: `mutant` becomes e.g. "CC125 + 10uM DCMU" in
 cell_counts and growth_summary, with the logged strain in `mutant_raw`.
 
+Counts listed in data/suppress.csv are dropped here, from all three outputs
+(see tools/suppress.py); build/suppressed_cellcounting.csv records what and why.
+
 Outputs, at the repo root under build/ (gitignored; rebuilt by CI on every
 push, never committed):
     build/all_cell_counts.csv
@@ -45,6 +48,8 @@ import os
 import re
 
 import pandas as pd
+
+import suppress
 
 DATA_DIR = "data"
 BUILD_DIR = "build"
@@ -131,13 +136,18 @@ def main():
     os.makedirs(BUILD_DIR, exist_ok=True)
 
     cell_counts, media_additions, growth_summary = [], [], []
+    rules = suppress.load_rules("cellcounting")      # data/suppress.csv
 
     for name, path in _experiment_dirs():
         eid = _experiment_id(path, name)
         analysis = os.path.join(path, "analysis")
 
         cc = _read_csv(os.path.join(analysis, "cell_counts.csv"))
+        cc = suppress.apply(cc, name, rules, "cellcounting", whole_if_empty=True)
+        if cc is not None and cc.empty:
+            cc = None
         if cc is not None:
+            cc = cc.copy()
             cc["timestamp"] = pd.to_datetime(cc["timestamp"])
             if "mutant" in cc.columns:
                 treated = ({lab: _treatment(g["condition"]) for lab, g in cc.groupby("label")}
@@ -153,14 +163,22 @@ def main():
             cell_counts.append(cc)
 
         ma = _read_csv(os.path.join(analysis, "media_additions.csv"))
+        ma = suppress.apply(ma, name, rules, "cellcounting")
+        if ma is not None and ma.empty:
+            ma = None
         if ma is not None:
+            ma = ma.copy()
             ma["timestamp"] = pd.to_datetime(ma["timestamp"])
             ma["experiment_id"] = eid
             ma["experiment_name"] = name
             media_additions.append(ma)
 
         gs = _read_csv(os.path.join(analysis, "growth_summary.csv"))
+        gs = suppress.apply(gs, name, rules, "cellcounting")
+        if gs is not None and gs.empty:
+            gs = None
         if gs is not None:
+            gs = gs.copy()
             if "mutant" in gs.columns:
                 _group_treated(gs, {r.label: _treatment([r.condition]) for r in gs.itertuples()}
                                if "condition" in gs.columns else {})
@@ -185,6 +203,7 @@ def main():
     _write(media_additions, "all_media_additions.csv")
     _write(growth_summary, "all_growth_summary.csv")
 
+    suppress.write_report("cellcounting")
     n = len(_experiment_dirs())
     print(f"{n} experiment folder(s) under {DATA_DIR}/")
 

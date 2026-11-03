@@ -11,7 +11,7 @@ Pick one experiment from the dropdown, or leave it on "All experiments" to
 see every colony from every experiment on the same axis — the view that
 matters for spotting whether a cell line's growth rate has drifted between
 runs done weeks or months apart. Pan, zoom, hover for exact values, and
-click a legend entry to hide or show a colony. The top panel is elapsed
+hover a point for its colony, strain, condition and experiment (there is no legend - it overwhelmed the plot once there were many colonies). Colour is the strain group; a treated culture such as "CC125 + 10uM DCMU" gets its own colour. The top panel is elapsed
 time (hours since each colony's own first reading, so one experiment's
 curve isn't offset by when it happened to start); the bottom panel is real
 date/time, the same colonies on a shared calendar axis. Triangles mark
@@ -47,3 +47,15 @@ counts as treated if any of its counts had a treatment, even if it was
 released later. Blank conditions and vehicle controls such as `EtOH-VC` stay
 with their strain; the vehicle words are listed in `VEHICLE_WORDS` in
 `tools/parse_data.py`.
+
+## Leaving data out of the site
+
+Everything under `data/` stays in the repo, but not everything belongs on the
+site - for example a run with too few readings to fit. List it in
+[`data/suppress.csv`](https://github.com/Trappy-Scopes/cell-counts/blob/main/data/suppress.csv)
+(`dataset, experiment, label, reason`; wildcards allowed, label `*` = every
+colony) and the build drops it from every aggregated CSV, plot and chart.
+`dataset` is `cellcounting` or `metaexperiment`. Delete the line to bring the
+data back. Each build logs what was suppressed and why
+(`build/suppressed_cellcounting.csv`, also in the downloadable CI artifact).
+The 1 uM cycloheximide run of 2026-10-22 is currently suppressed this way.

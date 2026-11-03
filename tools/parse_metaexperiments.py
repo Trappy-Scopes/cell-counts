@@ -83,6 +83,8 @@ import os
 
 import pandas as pd
 
+import suppress
+
 DATA_PATH = os.path.join("data", "metaexperiments", "all_cell_counts.csv")
 BUILD_DIR = "build"
 COLUMNS = ["source_experiment", "eid", "label", "dt", "sep", "density", "df",
@@ -109,6 +111,13 @@ def main():
         return
 
     df = pd.read_csv(DATA_PATH)
+    # rows listed in data/suppress.csv (dataset "metaexperiment") are left out of the build
+    rules = suppress.load_rules("metaexperiment")
+    if rules:
+        df = pd.concat([suppress.apply(g, name, rules, "metaexperiment")
+                        for name, g in df.groupby("source_experiment", sort=False)],
+                       ignore_index=True) if len(df) else df
+        suppress.write_report("metaexperiment")
 
     missing = [c for c in COLUMNS if c not in df.columns]
     if missing:

@@ -5,6 +5,7 @@ push — nothing here needs to be run again by hand.
 
 ```
 data/<experiment-name>/        one cellcounting.py experiment (Experiment.Construct)
+data/suppress.csv              counts kept in the repo but left out of the site (see Cell counting experiments)
 data/metaexperiments/          all_cell_counts.csv, a bulk export from ~/experiments (see Metaexperiments)
 legacy/data/                   pre-framework CSVs (see Legacy data)
 

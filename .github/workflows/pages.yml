@@ -62,7 +62,7 @@ jobs:
           # so growth-curves.md can link to each experiment's own detail
           for d in data/*/; do
             name=$(basename "$d")
-            if [ -d "$d/analysis" ]; then
+            if [ -d "$d/analysis" ] && ! grep -qxF "$name" build/suppressed_experiments.txt 2>/dev/null; then
               mkdir -p "docs/plots/$name"
               cp "$d/analysis/"*.png "docs/plots/$name/" 2>/dev/null || true
             fi
