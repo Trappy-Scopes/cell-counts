@@ -158,13 +158,15 @@ def plot_interactive(cc, ma):
 
     tools = "pan,box_zoom,wheel_zoom,reset,save"
     experiments = sorted(cc["experiment_name"].unique())
-    labels = sorted(cc["label"].unique())
-    colour_of_label = {lb: PALETTE[i % len(PALETTE)] for i, lb in enumerate(labels)}
+    groups = sorted(cc["mutant"].dropna().astype(str).unique()) if "mutant" in cc else []
+    colour_of_group = {m: PALETTE[i % len(PALETTE)] for i, m in enumerate(groups)}
+    for col in ("condition", "mutant_raw"):          # absent in CSVs from older builds
+        if col not in cc.columns:
+            cc[col] = ""
 
     fig_elapsed = figure(
         y_axis_type="log", height=440, width=980, tools=tools,
-        title="Elapsed time per colony — drag to pan, scroll to zoom, "
-              "click a legend entry to hide/show it",
+        title="Elapsed time per colony — drag to pan, scroll to zoom, hover a point for its colony",
         x_axis_label="elapsed time (hours, since that colony's own first reading)",
         y_axis_label="density (cells/mL, dilution-compensated)",
     )
@@ -180,26 +182,32 @@ def plot_interactive(cc, ma):
     for (exp_name, label), g in cc.groupby(["experiment_name", "label"]):
         g = g.sort_values("elapsed_hours")
         mutant = g["mutant"].iloc[0] if "mutant" in g else None
-        colour = colour_of_label[label]
-        legend = f"{label} ({mutant}) — {exp_name}" if len(experiments) > 1 else f"{label} ({mutant})"
+        colour = colour_of_group.get(str(mutant), INK)
+        cond = g["condition"].fillna("").astype(str)
+        raw_strain = g["mutant_raw"].fillna("").astype(str)
         src = ColumnDataSource(dict(
             x_elapsed=g["elapsed_hours"], x_datetime=g["timestamp"],
             y=g["compensated_density"], raw=g["density"],
             label=[label] * len(g), mutant=[str(mutant)] * len(g),
+            strain=[(r if r and r != "nan" else str(mutant)) for r in raw_strain],
+            condition=[c if c and c != "nan" else "-" for c in cond],
             experiment=[exp_name] * len(g),
+            elapsed=g["elapsed_hours"],
+            df=g["df"] if "df" in g else [""] * len(g),
             perturbed=[str(bool(p)) for p in g.get("perturbed", [False] * len(g))],
             ts=g["timestamp"].astype(str),
         ))
-        hover_tooltips = [("colony", "@label"), ("mutant", "@mutant"),
+        hover_tooltips = [("colony", "@label"), ("group", "@mutant"),
+                          ("strain", "@strain"), ("condition", "@condition"),
                           ("experiment", "@experiment"), ("time", "@ts"),
+                          ("elapsed", "@elapsed{0.0} h"), ("df", "@df"),
                           ("density (compensated)", "@y{%.2e}"),
-                          ("raw density", "@raw{%.2e}"), ("perturbed", "@perturbed")]
+                          ("raw density", "@raw{%.2e}"), ("media ever added", "@perturbed")]
         for fig, xcol in ((fig_elapsed, "x_elapsed"), (fig_datetime, "x_datetime")):
-            r_line = fig.line(xcol, "y", source=src, line_width=1.6, color=colour,
-                               legend_label=legend)
+            r_line = fig.line(xcol, "y", source=src, line_width=1.6, color=colour)
             r_line.tags = [exp_name]
             r_pts = fig.scatter(xcol, "y", source=src, size=5, color=colour,
-                                 marker="circle", legend_label=legend)
+                                 marker="circle")
             r_pts.tags = [exp_name]
             fig.add_tools(HoverTool(renderers=[r_pts], tooltips=hover_tooltips,
                                      formatters={"@y": "printf", "@raw": "printf"}, mode="mouse"))
@@ -229,9 +237,6 @@ def plot_interactive(cc, ma):
 
     for fig in (fig_elapsed, fig_datetime):
         fig.toolbar.logo = None
-        fig.legend.click_policy = "hide"
-        fig.legend.label_text_font_size = "8pt"
-        fig.legend.location = "top_left"
         fig.xgrid.grid_line_color = GRID
         fig.ygrid.grid_line_color = GRID
 
