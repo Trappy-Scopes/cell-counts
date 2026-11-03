@@ -48,6 +48,7 @@ def main():
         from bokeh.plotting import figure, output_file, save
         from bokeh.models import ColumnDataSource, HoverTool, Select, CustomJS
         from bokeh.layouts import column
+        import axisbreaks
     except ImportError:
         print("bokeh not installed - skipping legacy.html")
         return
@@ -66,7 +67,7 @@ def main():
         x_axis_type="datetime", y_axis_type="log", height=560, width=980,
         tools="pan,box_zoom,wheel_zoom,reset,save",
         title="Legacy density data, normalised to one schema — drag to pan, scroll to zoom, "
-              "click a legend entry to hide/show it",
+              "hover a point for its colony",
         x_axis_label="date / time", y_axis_label="density (cells/mL, dilution-corrected)",
     )
 
@@ -108,7 +109,8 @@ def main():
     """))
 
     output_file(out_path, title="cell-counts — legacy data explorer", mode="inline")
-    save(column(select, p, sizing_mode="stretch_width"))
+    time_axis = axisbreaks.add_axis_breaks(p)      # collapse long empty stretches; None if there are none
+    save(column(*([select] + ([time_axis] if time_axis is not None else []) + [p]), sizing_mode="stretch_width"))
     print(f"wrote {out_path} ({len(df)} rows, {len(strains)} strain(s), {len(colonies)} colony/replicate series)")
 
 

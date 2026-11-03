@@ -150,6 +150,7 @@ def plot_interactive(cc, ma):
         from bokeh.plotting import figure, output_file, save
         from bokeh.models import ColumnDataSource, HoverTool, Select, CustomJS
         from bokeh.layouts import column
+        import axisbreaks
     except ImportError:
         print("bokeh not installed - skipping interactive.html")
         return
@@ -252,7 +253,9 @@ def plot_interactive(cc, ma):
 
     output_file(f"{OUT}/interactive.html",
                 title="cell-counts — growth curve explorer", mode="inline")
-    save(column(select, fig_elapsed, fig_datetime, sizing_mode="stretch_width"))
+    time_axis = axisbreaks.add_axis_breaks(fig_datetime)   # collapse long empty stretches; None if there are none
+    items = [select, fig_elapsed] + ([time_axis] if time_axis is not None else []) + [fig_datetime]
+    save(column(*items, sizing_mode="stretch_width"))
 
 
 def main():

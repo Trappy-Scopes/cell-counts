@@ -131,8 +131,8 @@ def _build_doubling_time_chart(current_gs, legacy_gs):
         ("doubling time", "@doubling_time_hr{0.0} h"), ("R²", "@r_squared{0.00}"),
         ("n points", "@n_points"), ("file (legacy only)", "@detail"),
     ]))
-    p.xaxis.major_label_orientation = 1.0
-    p.xaxis.group_label_orientation = 0.9
+    p.xaxis.major_label_orientation = "vertical"   # slanted labels of neighbouring one-bar groups ran into each other
+    p.xaxis.group_label_orientation = "vertical"   # a long group name ("CC125 + 10uM DCMU") must not run into the colony labels
     p.xaxis.subgroup_label_orientation = 1.0
     p.y_range.start = 0
     p.xgrid.grid_line_color = None
@@ -176,6 +176,7 @@ def _build_realtime_growth_chart(current_cc, legacy_cc):
     from bokeh.plotting import figure
     from bokeh.models import ColumnDataSource, HoverTool, Select, CustomJS, Span, Label
     from bokeh.layouts import row as bokeh_row
+    import axisbreaks
 
     df = _unified_points(current_cc, legacy_cc)
     if df is None:
@@ -258,7 +259,8 @@ def _build_realtime_growth_chart(current_cc, legacy_cc):
     mutant_select.js_on_change("value", callback)
     media_select.js_on_change("value", callback)
 
-    controls = bokeh_row(mutant_select, media_select)
+    time_axis = axisbreaks.add_axis_breaks(p)      # collapse long empty stretches; None if there are none
+    controls = bokeh_row(mutant_select, media_select, *([time_axis] if time_axis is not None else []))
     return controls, p, len(df), len(mutants)
 
 

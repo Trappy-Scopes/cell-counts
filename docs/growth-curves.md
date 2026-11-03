@@ -15,7 +15,10 @@ hover a point for its colony, strain, condition and experiment (there is no lege
 time (hours since each colony's own first reading, so one experiment's
 curve isn't offset by when it happened to start); the bottom panel is real
 date/time, the same colonies on a shared calendar axis. Triangles mark
-media-addition events.
+media-addition events. Long empty stretches on the calendar axis are collapsed
+into a marked gap ("46 d gap") so the bursts of data stay readable; the
+**Real time** switch above the plot restores the ordinary axis, and ticks
+always show the true dates either way.
 
 <iframe src="../plots/interactive.html" width="100%" height="960" style="border:none;"
         title="Interactive growth curve explorer"></iframe>

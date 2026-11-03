@@ -69,6 +69,7 @@ def main():
         from bokeh.plotting import figure, output_file, save
         from bokeh.models import ColumnDataSource, HoverTool, MultiChoice, CustomJS, Div
         from bokeh.layouts import column
+        import axisbreaks
     except ImportError:
         print("bokeh not installed - skipping metaexperiments.html")
         return
@@ -79,9 +80,7 @@ def main():
     p = figure(
         x_axis_type="datetime", y_axis_type="log", height=560, width=980,
         tools="pan,box_zoom,wheel_zoom,reset,save",
-        title="Metaexperiment cultures — raw density (before separation, circle) vs. "
-              "separator density (after separation, square), by real date; hollow "
-              "triangle = scaled_density, where a reading has one",
+        title="Metaexperiment cultures — raw density (circle) vs separator density (square); hollow triangle = scaled_density",
         x_axis_label="date / time", y_axis_label="density (cells/mL)",
     )
 
@@ -186,7 +185,8 @@ def main():
     picker.js_on_change("value", callback)
 
     output_file(out_path, title="cell-counts — Metaexperiment cultures", mode="inline")
-    save(column(picker, note, p, sizing_mode="stretch_width"))
+    time_axis = axisbreaks.add_axis_breaks(p, min_gap_frac=0.3, max_breaks=3)   # only the big empty stretches: these are mostly one-day points, so a comb of breaks would be noise
+    save(column(*([picker, note] + ([time_axis] if time_axis is not None else []) + [p]), sizing_mode="stretch_width"))
     print(f"wrote {out_path} ({len(df)} rows, {len(labels)} culture(s), "
           f"{n_scaled_pts} with a distinct scaled_density)")
 
