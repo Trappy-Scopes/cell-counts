@@ -523,6 +523,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#leaving-data-out-of-the-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Leaving data out of the site
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -693,11 +704,14 @@ of the same exponential, not a sudden drop.</p>
 see every colony from every experiment on the same axis — the view that
 matters for spotting whether a cell line's growth rate has drifted between
 runs done weeks or months apart. Pan, zoom, hover for exact values, and
-click a legend entry to hide or show a colony. The top panel is elapsed
+hover a point for its colony, strain, condition and experiment (there is no legend - it overwhelmed the plot once there were many colonies). Colour is the strain group; a treated culture such as "CC125 + 10uM DCMU" gets its own colour. The top panel is elapsed
 time (hours since each colony's own first reading, so one experiment's
 curve isn't offset by when it happened to start); the bottom panel is real
 date/time, the same colonies on a shared calendar axis. Triangles mark
-media-addition events.</p>
+media-addition events. Long empty stretches on the calendar axis are collapsed
+into a marked gap ("46 d gap") so the bursts of data stay readable; the
+<strong>Real time</strong> switch above the plot restores the ordinary axis, and ticks
+always show the true dates either way.</p>
 <iframe src="../plots/interactive.html" width="100%" height="960" style="border:none;"
         title="Interactive growth curve explorer"></iframe>
 
@@ -722,6 +736,16 @@ counts as treated if any of its counts had a treatment, even if it was
 released later. Blank conditions and vehicle controls such as <code>EtOH-VC</code> stay
 with their strain; the vehicle words are listed in <code>VEHICLE_WORDS</code> in
 <code>tools/parse_data.py</code>.</p>
+<h2 id="leaving-data-out-of-the-site">Leaving data out of the site<a class="headerlink" href="#leaving-data-out-of-the-site" title="Permanent link">&para;</a></h2>
+<p>Everything under <code>data/</code> stays in the repo, but not everything belongs on the
+site - for example a run with too few readings to fit. List it in
+<a href="https://github.com/Trappy-Scopes/cell-counts/blob/main/data/suppress.csv"><code>data/suppress.csv</code></a>
+(<code>dataset, experiment, label, reason</code>; wildcards allowed, label <code>*</code> = every
+colony) and the build drops it from every aggregated CSV, plot and chart.
+<code>dataset</code> is <code>cellcounting</code> or <code>metaexperiment</code>. Delete the line to bring the
+data back. Each build logs what was suppressed and why
+(<code>build/suppressed_cellcounting.csv</code>, also in the downloadable CI artifact).
+The 1 uM cycloheximide run of 2026-10-22 is currently suppressed this way.</p>
 
 
 
