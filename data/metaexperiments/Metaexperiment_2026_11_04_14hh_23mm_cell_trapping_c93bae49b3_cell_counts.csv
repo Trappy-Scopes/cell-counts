@@ -1,0 +1,4 @@
+type,scopeid,mid,sid,dt,sessiontime,machinetime,attribs,eid,scriptid,exptime,measureid,measureidx,success,counts,df,density,label,sep,sample_media_ratio,scaled_density
+measurement,MDev,,c93bae49b3,2026-11-04 14:29:00.284273,341.62820512500184,1793802540284247000,{},c93bae49b3,,341.6047490830024,93ce742b01,0,,"(54, 60, 85, 75)",2.0,1370000.0,Mptx9A-13Oct26,False,,1370000.0
+measurement,MDev,,c93bae49b3,2026-11-04 14:29:38.025911,379.37114183400263,1793802578025809000,{},c93bae49b3,,379.3478725829991,93ce742b01,1,,"(10, 10, 9, 12, 13)",1.5,162000.0,Mptx9A-13Oct26,True,"(1, 9)",1620000.0
+measurement,MDev,,c93bae49b3,2026-11-04 14:30:05.891590,407.2382828750051,1793802605891547000,{},c93bae49b3,,407.2148114160009,93ce742b01,2,,"(5, 11, 7, 9, 8)",1.5,120000.0,Mptx9A-13Oct26-1uMCycloheximide,True,"(1, 9)",1200000.0
