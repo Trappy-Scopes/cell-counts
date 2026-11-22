@@ -1,0 +1,2 @@
+type,scopeid,mid,sid,dt,sessiontime,machinetime,attribs,eid,scriptid,exptime,measureid,measureidx,success,counts,df,density,label,sep,sample_media_ratio,scaled_density
+measurement,MDev,,f0896ccba3,2026-11-22 18:17:29.366979,124.91654633299913,1795371449366933000,{},f0896ccba3,,124.91139475000091,cf3627efe5,0,,"(62, 66, 51, 58)",2,1185000.0,Mptx22A-13Oct26,False,,1185000.0
